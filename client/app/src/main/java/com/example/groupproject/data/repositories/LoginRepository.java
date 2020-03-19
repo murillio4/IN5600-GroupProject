@@ -3,10 +3,13 @@ package com.example.groupproject.data.repositories;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+
 import com.example.groupproject.data.Constants;
-import com.example.groupproject.data.sources.LoginDataSource;
 import com.example.groupproject.data.Result;
-import com.example.groupproject.data.model.LoggedInUser;
+import com.example.groupproject.data.sources.LoginDataSource;
+import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
 
 /**
@@ -20,7 +23,16 @@ public class LoginRepository {
     private SharedPreferences pref;
     private LoginDataSource dataSource;
 
-    private LoggedInUser user = null;
+    private final Observer<Result<Person>> loginObserver = new Observer<Result<Person>>() {
+        @Override
+        public void onChanged(Result<Person> personResource) {
+            if (personResource instanceof Result.Success) {
+                user = ((Result.Success<Person>) personResource).getData();
+            }
+        }
+    };
+
+    private Person user = null;
 
     // private constructor : singleton access
     private LoginRepository(Context context, LoginDataSource dataSource) {
@@ -31,7 +43,7 @@ public class LoginRepository {
         String userString = pref.getString(Constants.SharedPreferences.Keys.User, null);
         this.user = userString == null
                 ? null
-                : new Gson().fromJson(userString, LoggedInUser.class);
+                : new Gson().fromJson(userString, Person.class);
     }
 
     public static LoginRepository getInstance(Context context, LoginDataSource dataSource) {
@@ -52,7 +64,7 @@ public class LoginRepository {
         dataSource.logout();
     }
 
-    private void setLoggedInUser(LoggedInUser user) {
+    private void setLoggedInUser(Person user) {
         this.user = user;
 
         SharedPreferences.Editor editor = pref.edit();
@@ -60,16 +72,15 @@ public class LoginRepository {
         editor.apply();
     }
 
-    public Result<LoggedInUser> login(String username, String password) {
+    public LiveData<Result<Person>> login(String username, String password) {
         // handle login
-        Result<LoggedInUser> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
-        }
+        LiveData<Result<Person>> result = dataSource.login(username, password);
+        result.observeForever(loginObserver);
+
         return result;
     }
 
-    public LoggedInUser getUser() {
+    public Person getUser() {
         return user;
     }
 }

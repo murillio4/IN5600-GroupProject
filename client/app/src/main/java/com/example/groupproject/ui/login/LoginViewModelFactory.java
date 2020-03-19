@@ -1,6 +1,7 @@
 package com.example.groupproject.ui.login;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
@@ -31,8 +32,10 @@ public class LoginViewModelFactory extends ViewModelProvider.AndroidViewModelFac
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+        Context context = application.getApplicationContext();
+
         if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-            return (T) new LoginViewModel(this.application, LoginRepository.getInstance(this.application.getApplicationContext(), new LoginDataSource()));
+            return (T) new LoginViewModel(this.application, LoginRepository.getInstance(context, new LoginDataSource(context)));
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

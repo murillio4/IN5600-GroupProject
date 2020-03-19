@@ -1,27 +1,28 @@
 package com.example.groupproject.data.sources;
 
-import com.example.groupproject.data.Result;
-import com.example.groupproject.data.model.LoggedInUser;
+import android.content.Context;
 
-import java.io.IOException;
+import androidx.lifecycle.LiveData;
+
+import com.example.groupproject.data.Constants;
+import com.example.groupproject.data.Result;
+import com.example.groupproject.data.model.Person;
+import com.example.groupproject.data.model.SignInRequest;
+import com.example.groupproject.data.utils.JsonApiRequest;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-public class LoginDataSource {
+public class LoginDataSource extends BaseSource {
 
-    public Result<LoggedInUser> login(String username, String password) {
 
-        try {
-            // TODO: handle loggedInUser authentication
-            LoggedInUser fakeUser =
-                    new LoggedInUser(
-                            java.util.UUID.randomUUID().toString(),
-                            "Jane Doe");
-            return new Result.Success<>(fakeUser);
-        } catch (Exception e) {
-            return new Result.Error(new IOException("Error logging in", e));
-        }
+    public LoginDataSource(Context context) {
+        super(context);
+    }
+
+    public LiveData<Result<Person>> login(String username, String password) {
+        return JsonApiRequest.post(Person.class, Constants.Api.Base, new SignInRequest(username, password), null)
+            .enqueue(getRequestQueue());
     }
 
     public void logout() {

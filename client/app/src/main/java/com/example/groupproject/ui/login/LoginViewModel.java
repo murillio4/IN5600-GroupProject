@@ -3,13 +3,14 @@ package com.example.groupproject.ui.login;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.app.Application;
 import android.util.Patterns;
 
 import com.example.groupproject.data.repositories.LoginRepository;
 import com.example.groupproject.data.Result;
-import com.example.groupproject.data.model.LoggedInUser;
+import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -17,6 +18,16 @@ public class LoginViewModel extends AndroidViewModel {
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
+
+    private final Observer<Result<Person>> loginObserver = new Observer<Result<Person>>() {
+        @Override
+        public void onChanged(Result<Person> result) {
+            if (result instanceof Result.Success) {
+                Person data = ((Result.Success<Person>) result).getData();
+                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
+            }
+        }
+    };
 
     public LoginViewModel(Application application, LoginRepository loginRepository) {
         super(application);
@@ -33,14 +44,8 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
-
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
+        LiveData<Result<Person>> result = loginRepository.login(username, password);
+        result.observeForever(loginObserver);
     }
 
     public void loginDataChanged(String username, String password) {
@@ -79,7 +84,7 @@ public class LoginViewModel extends AndroidViewModel {
         return loginRepository.isLoggedIn();
     }
 
-    public LoggedInUser getUser() {
+    public Person getUser() {
         return loginRepository.getUser();
     }
 }

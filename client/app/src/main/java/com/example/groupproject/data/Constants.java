@@ -8,4 +8,8 @@ public class Constants {
             public static String User = "USER_KEY";
         }
     }
+
+    public static class Api {
+        public static String Base = "http://10.0.2.2";
+    }
 }

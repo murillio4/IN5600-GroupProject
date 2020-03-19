@@ -3,6 +3,7 @@ package com.example.groupproject;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.groupproject.data.sources.BaseSource;
 import com.example.groupproject.ui.login.LoginActivity;
 import com.example.groupproject.ui.login.LoginViewModel;
 import com.example.groupproject.ui.login.LoginViewModelFactory;
@@ -26,6 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
