@@ -27,7 +27,9 @@ public class serverController {
 	//@RequestMapping(value="/methodPostRemoteLogin", method=RequestMethod.POST) 
 	@PostMapping(value="/methodPostRemoteLogin")
 	@ResponseBody
-	public Person methodPostRemoteLogin(@RequestParam String em, @RequestParam String ph) { 
+	public Person methodPostRemoteLogin(@RequestParam String em, @RequestParam String ph) {
+		out.println(em);
+		out.println(ph);
 		Person p;
 	   	if (em.equals(null)  || ph.equals(null)) {
 	   		System.out.println("serverController.methodPostRemoteLogin FATAL ERROR with at least one of the arguments null");

@@ -9,7 +9,7 @@ import android.app.Application;
 import android.util.Patterns;
 
 import com.example.groupproject.data.repositories.LoginRepository;
-import com.example.groupproject.data.Result;
+import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
 
@@ -19,13 +19,16 @@ public class LoginViewModel extends AndroidViewModel {
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
-    private final Observer<Result<Person>> loginObserver = new Observer<Result<Person>>() {
-        @Override
-        public void onChanged(Result<Person> result) {
-            if (result instanceof Result.Success) {
-                Person data = ((Result.Success<Person>) result).getData();
+    private final Observer<Result<Person>> loginObserver = result -> {
+        if (result.getStatus() == Result.Status.SUCCESS) {
+            if (result.getData() == null) {
+                loginResult.setValue(new LoginResult(R.string.login_failed));
+            } else {
+                Person data = result.getData();
                 loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
             }
+        } else {
+            loginResult.setValue(new LoginResult(R.string.login_failed));
         }
     };
 
@@ -77,7 +80,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        return password != null && password.trim().length() > 3;
     }
 
     public boolean isLoggedIn() {

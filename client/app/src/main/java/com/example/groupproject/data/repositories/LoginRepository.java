@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.groupproject.data.Constants;
-import com.example.groupproject.data.Result;
+import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.sources.LoginDataSource;
 import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
@@ -18,17 +18,12 @@ import com.google.gson.Gson;
  */
 public class LoginRepository {
     private static volatile LoginRepository instance;
-
-    private Context context;
     private SharedPreferences pref;
     private LoginDataSource dataSource;
 
-    private final Observer<Result<Person>> loginObserver = new Observer<Result<Person>>() {
-        @Override
-        public void onChanged(Result<Person> personResource) {
-            if (personResource instanceof Result.Success) {
-                user = ((Result.Success<Person>) personResource).getData();
-            }
+    private final Observer<Result<Person>> loginObserver = personResource -> {
+        if (personResource.getStatus() == Result.Status.SUCCESS) {
+            setLoggedInUser(personResource.getData());
         }
     };
 
@@ -37,7 +32,6 @@ public class LoginRepository {
     // private constructor : singleton access
     private LoginRepository(Context context, LoginDataSource dataSource) {
         this.dataSource = dataSource;
-        this.context = context;
         this.pref = context.getSharedPreferences(Constants.SharedPreferences.Name, Context.MODE_PRIVATE);
 
         String userString = pref.getString(Constants.SharedPreferences.Keys.User, null);
