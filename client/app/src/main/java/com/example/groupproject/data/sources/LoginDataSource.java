@@ -7,14 +7,12 @@ import androidx.lifecycle.LiveData;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.model.Person;
-import com.example.groupproject.data.model.SignInRequest;
 import com.example.groupproject.data.network.request.GsonRequest;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 public class LoginDataSource extends BaseSource {
-
 
     public LoginDataSource(Context context) {
         super(context);
