@@ -18,6 +18,9 @@ import com.example.groupproject.ui.result.LoginResult;
 
 import javax.inject.Inject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginViewModel extends AndroidViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
@@ -53,7 +56,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        LiveData<Result<Person>> result = personRepository.login(username, password);
+        LiveData<Result<Person>> result = loginRepository.login(username, md5(password));
         result.observeForever(loginObserver);
     }
 
@@ -70,6 +73,29 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void logout() {
         personRepository.logout();
+    }
+
+    private String md5(String password) {
+        MessageDigest messageDigest;
+        byte[] passwordHash;
+
+        try {
+            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(password.getBytes());
+            passwordHash = messageDigest.digest();
+
+            StringBuffer hexString = new StringBuffer();
+            for (int i = 0; i < passwordHash.length; i++) {
+                String num = String.format("%02X", 0xFF & passwordHash[i]);
+                hexString.append(num.toLowerCase());
+            }
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     // A placeholder username validation check

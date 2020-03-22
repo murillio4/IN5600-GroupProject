@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 public abstract class BaseSource {
+
     protected final RequestQueue requestQueue;
 
     public BaseSource(RequestQueue requestQueue) {

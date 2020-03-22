@@ -1,6 +1,7 @@
 package com.example.groupproject.data.network.request;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;

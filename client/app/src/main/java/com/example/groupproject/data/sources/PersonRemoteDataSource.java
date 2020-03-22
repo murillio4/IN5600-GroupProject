@@ -15,7 +15,6 @@ import com.example.groupproject.data.network.request.GsonRequest;
  */
 public class PersonRemoteDataSource extends BaseSource {
 
-
     public PersonRemoteDataSource(RequestQueue requestQueue) {
         super(requestQueue);
     }
