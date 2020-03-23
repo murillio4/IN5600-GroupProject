@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer;
 import android.app.Application;
 import android.util.Patterns;
 
-import com.example.groupproject.data.repositories.LoginRepository;
+import com.example.groupproject.data.repositories.PersonRepository;
 import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
@@ -17,7 +17,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private PersonRepository personRepository;
 
     private final Observer<Result<Person>> loginObserver = result -> {
         if (result.getStatus() == Result.Status.SUCCESS) {
@@ -32,22 +32,22 @@ public class LoginViewModel extends AndroidViewModel {
         }
     };
 
-    public LoginViewModel(Application application, LoginRepository loginRepository) {
+    public LoginViewModel(Application application, PersonRepository personRepository) {
         super(application);
-        this.loginRepository = loginRepository;
+        this.personRepository = personRepository;
     }
 
-    LiveData<LoginFormState> getLoginFormState() {
+    public LiveData<LoginFormState> getLoginFormState() {
         return loginFormState;
     }
 
-    LiveData<LoginResult> getLoginResult() {
+    public LiveData<LoginResult> getLoginResult() {
         return loginResult;
     }
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        LiveData<Result<Person>> result = loginRepository.login(username, password);
+        LiveData<Result<Person>> result = personRepository.login(username, password);
         result.observeForever(loginObserver);
     }
 
@@ -63,7 +63,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 
     public void logout() {
-        loginRepository.logout();
+        personRepository.logout();
     }
 
     // A placeholder username validation check
@@ -84,10 +84,10 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public boolean isLoggedIn() {
-        return loginRepository.isLoggedIn();
+        return personRepository.isLoggedIn();
     }
 
     public Person getUser() {
-        return loginRepository.getUser();
+        return personRepository.getUser();
     }
 }

@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
 
-import com.example.groupproject.data.sources.LoginDataSource;
-import com.example.groupproject.data.repositories.LoginRepository;
+import com.example.groupproject.data.sources.PersonRemoteDataSource;
+import com.example.groupproject.data.repositories.PersonRepository;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -35,7 +35,7 @@ public class LoginViewModelFactory extends ViewModelProvider.AndroidViewModelFac
         Context context = application.getApplicationContext();
 
         if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-            return (T) new LoginViewModel(this.application, LoginRepository.getInstance(context, new LoginDataSource(context)));
+            return (T) new LoginViewModel(this.application, PersonRepository.getInstance(context, new PersonRemoteDataSource(context)));
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

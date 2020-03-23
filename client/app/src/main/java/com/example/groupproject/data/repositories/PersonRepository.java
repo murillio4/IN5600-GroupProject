@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.network.model.Result;
-import com.example.groupproject.data.sources.LoginDataSource;
+import com.example.groupproject.data.sources.PersonRemoteDataSource;
 import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
 
@@ -16,10 +16,10 @@ import com.google.gson.Gson;
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class LoginRepository {
-    private static volatile LoginRepository instance;
+public class PersonRepository {
+    private static volatile PersonRepository instance;
     private SharedPreferences pref;
-    private LoginDataSource dataSource;
+    private PersonRemoteDataSource dataSource;
 
     private final Observer<Result<Person>> loginObserver = personResource -> {
         if (personResource.getStatus() == Result.Status.SUCCESS) {
@@ -30,7 +30,7 @@ public class LoginRepository {
     private Person user = null;
 
     // private constructor : singleton access
-    private LoginRepository(Context context, LoginDataSource dataSource) {
+    private PersonRepository(Context context, PersonRemoteDataSource dataSource) {
         this.dataSource = dataSource;
         this.pref = context.getSharedPreferences(Constants.SharedPreferences.Name, Context.MODE_PRIVATE);
 
@@ -40,9 +40,9 @@ public class LoginRepository {
                 : new Gson().fromJson(userString, Person.class);
     }
 
-    public static LoginRepository getInstance(Context context, LoginDataSource dataSource) {
+    public static PersonRepository getInstance(Context context, PersonRemoteDataSource dataSource) {
         if (instance == null) {
-            instance = new LoginRepository(context, dataSource);
+            instance = new PersonRepository(context, dataSource);
         }
 
         return instance;

@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.activity;
 
 import android.app.Activity;
 
@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
+import com.example.groupproject.ui.login.LoggedInUserView;
 import com.example.groupproject.ui.login.LoginViewModel;
 import com.example.groupproject.ui.login.LoginViewModelFactory;
 
