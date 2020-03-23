@@ -16,7 +16,6 @@ import com.example.groupproject.data.network.request.VolleyRequest;
  */
 public class PersonRemoteDataSource extends BaseSource {
 
-
     public PersonRemoteDataSource(VolleyRequest volleyRequest) {
         super(volleyRequest);
     }
