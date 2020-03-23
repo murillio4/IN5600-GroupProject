@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.example.groupproject.data.utils.GsonUtils;
@@ -23,10 +24,9 @@ public class GsonRequest<T> extends BaseRequest<T> {
     private final Gson gson;
     private final Class<T> responseClass;
 
-    private GsonRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body, Class<T> responseClass) {
-        super(method, url, headers, bodyParams, body);
-
-        this.gson = GsonUtils.getReusableGson();
+    private GsonRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body, Class<T> responseClass, Gson gson, RequestQueue requestQueue) {
+        super(method, url, headers, bodyParams, body, requestQueue);
+        this.gson = gson;
         this.responseClass = responseClass;
     }
 
@@ -49,13 +49,18 @@ public class GsonRequest<T> extends BaseRequest<T> {
 
     public static class Builder<T> extends BaseRequest.Builder<T> {
         private Class<T> responseClass;
-
         private Gson gson;
 
-        private Builder(int method, String url, Class<T> responseClass) {
+        Builder(int method, String url, Class<T> responseClass, Gson gson) {
             super(method, url);
             this.responseClass = responseClass;
-            gson = GsonUtils.getReusableGson();
+            this.gson = gson;
+        }
+
+        @Override
+        public Builder<T> setRequestQueue(RequestQueue requestQueue) {
+            super.setRequestQueue(requestQueue);
+            return this;
         }
 
         @Override
@@ -88,19 +93,19 @@ public class GsonRequest<T> extends BaseRequest<T> {
         }
 
         public GsonRequest<T> build() {
-            return new GsonRequest<T>(method, buildUrl(), headers, bodyParams, body, responseClass);
+            return new GsonRequest<T>(method, buildUrl(), headers, bodyParams, body, responseClass, gson, requestQueue);
         }
 
-        public static <T> Builder<T> get(String url, Class<T> responseClass) {
-            return new Builder<T>(Method.GET, url, responseClass);
+        public static <T> Builder<T> get(String url, Class<T> responseClass, Gson gson) {
+            return new Builder<T>(Method.GET, url, responseClass, gson);
         }
 
-        public static <T> Builder<T> post(String url, Class<T> responseClass) {
-            return new Builder<T>(Method.POST, url, responseClass);
+        public static <T> Builder<T> post(String url, Class<T> responseClass, Gson gson) {
+            return new Builder<T>(Method.POST, url, responseClass, gson);
         }
 
-        public static <T> Builder<T> put(String url, Class<T> responseClass) {
-            return new Builder<T>(Method.PUT, url, responseClass);
+        public static <T> Builder<T> put(String url, Class<T> responseClass, Gson gson) {
+            return new Builder<T>(Method.PUT, url, responseClass, gson);
         }
     }
 }

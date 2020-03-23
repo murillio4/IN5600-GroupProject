@@ -1,6 +1,7 @@
 package com.example.groupproject.di.modules;
 
 import com.android.volley.RequestQueue;
+import com.example.groupproject.data.network.request.VolleyRequest;
 import com.example.groupproject.data.sources.PersonRemoteDataSource;
 
 import javax.inject.Singleton;
@@ -12,7 +13,7 @@ import dagger.Provides;
 public class SourceModule {
     @Provides
     @Singleton
-    PersonRemoteDataSource providePersonRemoteDataSource(RequestQueue requestQueue) {
-        return new PersonRemoteDataSource(requestQueue);
+    PersonRemoteDataSource providePersonRemoteDataSource(VolleyRequest volleyRequest) {
+        return new PersonRemoteDataSource(volleyRequest);
     }
 }

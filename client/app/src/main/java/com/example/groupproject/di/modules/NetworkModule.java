@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.example.groupproject.data.Constants;
+import com.example.groupproject.data.network.request.VolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,5 +48,16 @@ public class NetworkModule {
         RequestQueue requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
         return requestQueue;
+    }
+
+    @Provides
+    @Singleton
+    VolleyRequest provideVolleyRequest(Gson gson, RequestQueue requestQueue) {
+        return new VolleyRequest.Builder()
+                .setBaseUrl(Constants.Api.Base)
+                .setGson(gson)
+                .setRequestQueue(requestQueue)
+                .build();
+
     }
 }

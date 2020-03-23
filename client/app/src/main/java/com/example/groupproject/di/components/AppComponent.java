@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 //        (modules = {
@@ -23,15 +24,18 @@ import dagger.android.support.AndroidSupportInjectionModule;
 //        ActivityModule.class,
 //        AndroidSupportInjectionModule.class})
 
-@Component(modules = {
+@Singleton
+@Component(
+    modules = {
         NetworkModule.class,
         SourceModule.class,
         RepositoryModule.class,
         ViewModelModule.class,
         ActivityBuilderModule.class,
-        AndroidSupportInjectionModule.class})
-@Singleton
-public interface AppComponent {
+        AndroidSupportInjectionModule.class
+    }
+)
+public interface AppComponent extends AndroidInjector<AppController> {
 
     @Component.Builder
     interface Builder {
@@ -41,6 +45,4 @@ public interface AppComponent {
 
         AppComponent build();
     }
-
-    void inject(AppController appController);
 }
