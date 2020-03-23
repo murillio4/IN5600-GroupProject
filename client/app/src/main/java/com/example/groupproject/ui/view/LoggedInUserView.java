@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.view;
 
 /**
  * Class exposing authenticated user details to the UI.
@@ -7,7 +7,7 @@ public class LoggedInUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
 
-    LoggedInUserView(String displayName) {
+    public LoggedInUserView(String displayName) {
         this.displayName = displayName;
     }
 

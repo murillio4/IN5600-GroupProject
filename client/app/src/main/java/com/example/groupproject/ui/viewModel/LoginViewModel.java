@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.viewModel;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -12,6 +12,11 @@ import com.example.groupproject.data.repositories.PersonRepository;
 import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
+import com.example.groupproject.ui.view.LoggedInUserView;
+import com.example.groupproject.ui.state.LoginFormState;
+import com.example.groupproject.ui.result.LoginResult;
+
+import javax.inject.Inject;
 
 public class LoginViewModel extends AndroidViewModel {
 
@@ -32,6 +37,7 @@ public class LoginViewModel extends AndroidViewModel {
         }
     };
 
+    @Inject
     public LoginViewModel(Application application, PersonRepository personRepository) {
         super(application);
         this.personRepository = personRepository;

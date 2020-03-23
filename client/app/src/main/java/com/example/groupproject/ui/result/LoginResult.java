@@ -1,6 +1,8 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.result;
 
 import androidx.annotation.Nullable;
+
+import com.example.groupproject.ui.view.LoggedInUserView;
 
 /**
  * Authentication result : success (user details) or error message.
@@ -11,11 +13,11 @@ public class LoginResult {
     @Nullable
     private Integer error;
 
-    LoginResult(@Nullable Integer error) {
+    public LoginResult(@Nullable Integer error) {
         this.error = error;
     }
 
-    LoginResult(@Nullable LoggedInUserView success) {
+    public LoginResult(@Nullable LoggedInUserView success) {
         this.success = success;
     }
 

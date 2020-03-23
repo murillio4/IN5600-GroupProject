@@ -16,14 +16,14 @@ import java.util.Map;
 
 
 public class GsonRequest<T> extends BaseRequest<T> {
-    protected static final String PROTOCOL_CHARSET = "utf-8";
+    private static final String PROTOCOL_CHARSET = "utf-8";
     private static final String PROTOCOL_CONTENT_TYPE =
             String.format("application/json; charset=%s", PROTOCOL_CHARSET);
 
     private final Gson gson;
     private final Class<T> responseClass;
 
-    protected GsonRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body, Class<T> responseClass) {
+    private GsonRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body, Class<T> responseClass) {
         super(method, url, headers, bodyParams, body);
 
         this.gson = GsonUtils.getReusableGson();

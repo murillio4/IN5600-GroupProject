@@ -5,23 +5,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.groupproject.R;
-import com.example.groupproject.ui.login.LoginViewModel;
-import com.example.groupproject.ui.login.LoginViewModelFactory;
+import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import dagger.android.AndroidInjection;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DaggerAppCompatActivity {
 
     private LoginViewModel loginViewModel;
 
@@ -40,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
-        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(getApplication())).get(LoginViewModel.class);
+        /*loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(getApplication())).get(LoginViewModel.class);
         if (!loginViewModel.isLoggedIn()) {
             startActivity(new Intent(this, LoginActivity.class));
-        }
+        }*/
     }
 
     @Override

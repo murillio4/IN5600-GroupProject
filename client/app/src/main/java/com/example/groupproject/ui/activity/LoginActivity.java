@@ -2,41 +2,36 @@ package com.example.groupproject.ui.activity;
 
 import android.app.Activity;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
-import com.example.groupproject.ui.login.LoggedInUserView;
-import com.example.groupproject.ui.login.LoginViewModel;
-import com.example.groupproject.ui.login.LoginViewModelFactory;
+import com.example.groupproject.ui.view.LoggedInUserView;
+import com.example.groupproject.ui.viewModel.LoginViewModel;
 
-public class LoginActivity extends AppCompatActivity {
+import javax.inject.Inject;
 
-    private LoginViewModel loginViewModel;
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class LoginActivity extends DaggerAppCompatActivity {
+
+    @Inject
+    public LoginViewModel loginViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(getApplication()))
-                .get(LoginViewModel.class);
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
