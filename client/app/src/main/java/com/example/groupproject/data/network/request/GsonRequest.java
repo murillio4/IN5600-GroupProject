@@ -8,7 +8,6 @@ import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.example.groupproject.data.utils.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 

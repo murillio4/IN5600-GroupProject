@@ -4,8 +4,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -14,12 +12,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.example.groupproject.data.network.model.Result;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.AsyncSubject;
 
 public class BaseRequest<T> extends Request<T> {
 
@@ -29,7 +31,7 @@ public class BaseRequest<T> extends Request<T> {
 
     private String body;
 
-    private MutableLiveData<Result<T>> result = new MutableLiveData<>();
+    private AsyncSubject<Optional<T>> result = AsyncSubject.create();
 
     private RequestQueue requestQueue;
 
@@ -51,13 +53,15 @@ public class BaseRequest<T> extends Request<T> {
     }
 
     @Override
-    protected void deliverResponse(T response) {
-        result.setValue(Result.success(response));
+    protected void deliverResponse(@Nullable T response) {
+        result.onNext(Optional.ofNullable(response));
+        result.onComplete();
     }
 
     @Override
     public void deliverError(VolleyError error) {
-        result.setValue(Result.error(error));
+        result.onError(error);
+        result.onComplete();
     }
 
     @Override
@@ -74,7 +78,7 @@ public class BaseRequest<T> extends Request<T> {
         return body != null ? body.getBytes() : null;
     }
 
-    public LiveData<Result<T>> enqueue() {
+    public Observable<Optional<T>> enqueue() {
         requestQueue.add(this);
         return result;
     }

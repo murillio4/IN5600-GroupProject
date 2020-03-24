@@ -3,69 +3,85 @@ package com.example.groupproject.data.repositories;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.groupproject.data.Constants;
+import com.example.groupproject.data.NetworkBoundResource;
+import com.example.groupproject.data.Resource;
 import com.example.groupproject.data.network.model.Result;
-import com.example.groupproject.data.sources.PersonRemoteDataSource;
+import com.example.groupproject.data.sources.local.PersonLocalDataSource;
+import com.example.groupproject.data.sources.remote.PersonRemoteDataSource;
 import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
+
+import java.util.Optional;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
 public class PersonRepository {
-    private SharedPreferences pref;
-    private PersonRemoteDataSource dataSource;
+    private PersonRemoteDataSource remoteDataSource;
+    private PersonLocalDataSource localDataSource;
 
-    private final Observer<Result<Person>> loginObserver = personResource -> {
-        if (personResource.getStatus() == Result.Status.SUCCESS) {
-            setLoggedInUser(personResource.getData());
-        }
-    };
 
-    private Person user = null;
+    public PersonRepository(PersonRemoteDataSource remoteDataSource, PersonLocalDataSource localDataSource) {
+        this.remoteDataSource = remoteDataSource;
+        this.localDataSource = localDataSource;
 
-    // private constructor : singleton access
-    public PersonRepository(Context context, PersonRemoteDataSource dataSource) {
-        this.dataSource = dataSource;
-        this.pref = context.getSharedPreferences(Constants.SharedPreferences.Name, Context.MODE_PRIVATE);
-
-        String userString = pref.getString(Constants.SharedPreferences.Keys.User, null);
-        this.user = userString == null
-                ? null
-                : new Gson().fromJson(userString, Person.class);
     }
 
     public boolean isLoggedIn() {
-        return user != null;
+        return localDataSource.getUser() != null;
     }
 
     public void logout() {
-        user = null;
-        pref.edit().clear().apply();
-        dataSource.logout();
+        localDataSource.removeUser();
     }
 
-    private void setLoggedInUser(Person user) {
-        this.user = user;
+    public Observable<Resource<Person>> login(String username, String password) {
+        return new NetworkBoundResource<Person, Person>() {
 
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString(Constants.SharedPreferences.Keys.User, new Gson().toJson(user));
-        editor.apply();
-    }
+            @Override
+            protected boolean shouldFetchRemote() {
+                return true;
+            }
 
-    public LiveData<Result<Person>> login(String username, String password) {
-        // handle login
-        LiveData<Result<Person>> result = dataSource.login(username, password);
-        result.observeForever(loginObserver);
+            @Override
+            protected void saveRemoteResult(@NonNull Person item) {
+                localDataSource.setUser(item);
+            }
 
-        return result;
+            @NonNull
+            @Override
+            protected Flowable<Person> fetchLocal() {
+                Person person = localDataSource.getUser();
+                if (person == null) {
+                    return Flowable.empty();
+                }
+                System.out.println(person.toString());
+                return Flowable.just(person);
+            }
+
+            @NonNull
+            @Override
+            protected Observable<Resource<Person>> fetchRemote() {
+                return remoteDataSource.login(username, password)
+                        .flatMap(remoteResponse ->
+                            remoteResponse
+                                    .map(person -> Observable.just(Resource.success(person)))
+                                    .orElseGet(() -> Observable.error(new Throwable("Error signing in user"))));
+            }
+        }.getAsObservable();
     }
 
     public Person getUser() {
-        return user;
+        return localDataSource.getUser();
     }
 }

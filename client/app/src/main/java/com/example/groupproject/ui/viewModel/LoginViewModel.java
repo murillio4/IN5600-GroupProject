@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer;
 import android.app.Application;
 import android.util.Patterns;
 
+import com.example.groupproject.data.Resource;
+import com.example.groupproject.data.Status;
 import com.example.groupproject.data.repositories.PersonRepository;
 import com.example.groupproject.data.network.model.Result;
 import com.example.groupproject.data.model.Person;
@@ -21,24 +23,16 @@ import javax.inject.Inject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.internal.observers.DisposableLambdaObserver;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+
 public class LoginViewModel extends AndroidViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private PersonRepository personRepository;
-
-    private final Observer<Result<Person>> loginObserver = result -> {
-        if (result.getStatus() == Result.Status.SUCCESS) {
-            if (result.getData() == null) {
-                loginResult.setValue(new LoginResult(R.string.login_failed));
-            } else {
-                Person data = result.getData();
-                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
-            }
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
-    };
 
     @Inject
     public LoginViewModel(Application application, PersonRepository personRepository) {
@@ -55,9 +49,55 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        LiveData<Result<Person>> result = personRepository.login(username, md5(password));
-        result.observeForever(loginObserver);
+        personRepository.login(username, md5(password))
+                .subscribe(personResource -> {
+                    System.out.println(personResource.getStatus());
+
+                    if (personResource.getStatus() == Status.LOADING) { return; }
+
+                    switch (personResource.getStatus()) {
+                        case ERROR:
+                            loginResult.setValue(new LoginResult(R.string.login_failed));
+                            break;
+                        case SUCCESS:
+                            if (personResource.getData() == null) {
+                                loginResult.setValue(new LoginResult(R.string.login_failed));
+                            } else {
+                                Person data = personResource.getData();
+                                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
+                            }
+                            break;
+                    }
+                });
+                /*.subscribe(new DisposableObserver<Resource<Person>>() {
+                    @Override
+                    public void onNext(@NonNull Resource<Person> personResource) {
+
+                        System.out.println(personResource.getStatus());
+
+                        if (personResource.getStatus() == Status.LOADING) { return; }
+
+                        switch (personResource.getStatus()) {
+                            case ERROR:
+                                loginResult.setValue(new LoginResult(R.string.login_failed));
+                                break;
+                            case SUCCESS:
+                                if (personResource.getData() == null) {
+                                    loginResult.setValue(new LoginResult(R.string.login_failed));
+                                } else {
+                                    Person data = personResource.getData();
+                                    loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
+                                }
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {}
+
+                    @Override
+                    public void onComplete() {}
+                });*/
     }
 
     public void loginDataChanged(String username, String password) {
