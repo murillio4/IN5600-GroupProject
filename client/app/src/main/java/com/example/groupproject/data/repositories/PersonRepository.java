@@ -63,7 +63,7 @@ public class PersonRepository {
             protected Flowable<Person> fetchLocal() {
                 Person person = localDataSource.getUser();
                 if (person == null) {
-                    return Flowable.empty();
+                    return Flowable.error(new Throwable("No user"));
                 }
                 System.out.println(person.toString());
                 return Flowable.just(person);

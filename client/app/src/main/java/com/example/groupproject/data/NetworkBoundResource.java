@@ -20,25 +20,28 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             source = fetchRemote()
                     .subscribeOn(Schedulers.io())
                     .doOnNext(remoteResponse -> saveRemoteResult(processResponse(remoteResponse)))
-                    .flatMap(remoteResponse -> fetchLocal().toObservable().map(Resource::success))
+                    .flatMap(remoteResponse -> fetchLocal()
+                            .toObservable()
+                            .map(Resource::success)
+                    )
                     .doOnError(this::onRemoteFetchError)
                     .onErrorResumeNext(t -> fetchLocal()
                             .toObservable()
                             .map(data -> Resource.error(t, data))
-                            .defaultIfEmpty(Resource.error(t, null)))
+                            .onErrorResumeNext(t2 -> Observable.just(Resource.error(t, null))))
                     .observeOn(AndroidSchedulers.mainThread());
         } else {
             source = fetchLocal()
                     .toObservable()
                     .map(Resource::success)
-                    .defaultIfEmpty(Resource.error(new Throwable(), null));
+                    .onErrorResumeNext(t -> Observable.just(Resource.error(t, null)));
         }
 
         result = Observable.concat(
                 fetchLocal()
                     .toObservable()
                     .map(Resource::loading)
-                    .defaultIfEmpty(Resource.loading(null)),
+                    .onErrorResumeNext(t -> Observable.just(Resource.loading(null))),
                 source
         );
     }
