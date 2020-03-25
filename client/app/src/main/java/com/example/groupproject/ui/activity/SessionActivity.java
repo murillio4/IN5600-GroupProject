@@ -20,12 +20,13 @@ public abstract class SessionActivity extends DaggerAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         if (sessionViewModel.getSession() == null) {
+            Log.i(TAG, "onCreate: No user");
             startLoginActivity();
         } else {
             sessionViewModel.getSessionObserver().observe(this, session -> {
                 if (session == null) {
+                    Log.i(TAG, "onCreate: User observable");
                     startLoginActivity();
                 }
             });

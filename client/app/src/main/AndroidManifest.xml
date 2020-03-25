@@ -16,7 +16,7 @@
         <!--<activity android:name=".ui.activity.SessionActivity"></activity>-->
         <activity
             android:name=".ui.activity.MainActivity"
-            android:label="@string/title_activity_dashboard"
+            android:label="@string/title_main_activity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -104,13 +104,12 @@ public class LoginActivity extends DaggerAppCompatActivity {
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
-        setResult(Activity.RESULT_OK);
         finish();
     }
 
     private void showLoginSuccess(@NonNull LoggedInUserView loggedInUserView) {
-        Toast.makeText(getApplicationContext(), loggedInUserView.getDisplayName(),
-                Toast.LENGTH_SHORT).show();
+        String welcome = getString(R.string.welcome) + loggedInUserView.getDisplayName();
+        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

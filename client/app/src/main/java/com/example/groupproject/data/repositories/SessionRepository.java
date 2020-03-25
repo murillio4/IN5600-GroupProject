@@ -1,5 +1,7 @@
 package com.example.groupproject.data.repositories;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.groupproject.data.NetworkBoundResource;
@@ -17,6 +19,8 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
  * maintains an in-memory cache of login status and user credentials information.
  */
 public class SessionRepository {
+    private static final String TAG = "SessionRepository";
+
     private SessionRemoteDataSource remoteDataSource;
     private SessionLocalDataSource localDataSource;
 
@@ -26,14 +30,12 @@ public class SessionRepository {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
     }
-
-    public boolean isLoggedIn() {
-        return localDataSource.getUser() != null;
-    }
-
+    
     public void logout() {
+        Log.i(TAG, "logout");
         localDataSource.removeUser();
         personPublishSubject.onError(new Throwable("User logged out"));
+        personPublishSubject = PublishSubject.create();
     }
 
     public Observable<Resource<Person>> login(String username, String password) {
@@ -57,7 +59,6 @@ public class SessionRepository {
                 if (person == null) {
                     return Flowable.error(new Throwable("No user"));
                 }
-                System.out.println(person.toString());
                 return Flowable.just(person);
             }
 
@@ -73,7 +74,7 @@ public class SessionRepository {
         }.getAsObservable();
     }
 
-    public Observable<Person> observeSession() {
+    public Observable<Person> getSessionObserver() {
         return personPublishSubject;
     }
 

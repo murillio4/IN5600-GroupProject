@@ -23,6 +23,7 @@ public abstract class ViewModelModule {
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);
 
+
     @Binds
     @IntoMap
     @ViewModelKey(SessionViewModel.class)

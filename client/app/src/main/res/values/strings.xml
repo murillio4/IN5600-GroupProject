@@ -9,8 +9,9 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be > 3 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <string name="title_main_activity">ASS Insurance</string>
 
 </resources>
