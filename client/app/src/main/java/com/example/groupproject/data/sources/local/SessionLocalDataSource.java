@@ -7,12 +7,12 @@ import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
 
-public class PersonLocalDataSource {
+public class SessionLocalDataSource {
     private Gson gson;
     private SharedPreferences pref;
     private Person user;
 
-    public PersonLocalDataSource(Context context, Gson gson) {
+    public SessionLocalDataSource(Context context, Gson gson) {
         this.gson = gson;
         this.pref = context.getSharedPreferences(Constants.SharedPreferences.Name, Context.MODE_PRIVATE);
 

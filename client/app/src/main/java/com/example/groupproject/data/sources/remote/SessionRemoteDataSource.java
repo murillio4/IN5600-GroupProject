@@ -12,9 +12,9 @@ import io.reactivex.rxjava3.core.Observable;
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-public class PersonRemoteDataSource extends BaseRemoteSource {
+public class SessionRemoteDataSource extends BaseRemoteSource {
 
-    public PersonRemoteDataSource(VolleyRequest volleyRequest) {
+    public SessionRemoteDataSource(VolleyRequest volleyRequest) {
         super(volleyRequest);
     }
 

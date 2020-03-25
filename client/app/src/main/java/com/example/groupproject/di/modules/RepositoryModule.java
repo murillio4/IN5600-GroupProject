@@ -1,10 +1,8 @@
 package com.example.groupproject.di.modules;
 
-import android.app.Application;
-
-import com.example.groupproject.data.repositories.PersonRepository;
-import com.example.groupproject.data.sources.local.PersonLocalDataSource;
-import com.example.groupproject.data.sources.remote.PersonRemoteDataSource;
+import com.example.groupproject.data.repositories.SessionRepository;
+import com.example.groupproject.data.sources.local.SessionLocalDataSource;
+import com.example.groupproject.data.sources.remote.SessionRemoteDataSource;
 
 import javax.inject.Singleton;
 
@@ -16,7 +14,7 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    PersonRepository providePersonRepository(PersonRemoteDataSource personRemoteDataSource, PersonLocalDataSource personLocalDataSource) {
-        return new PersonRepository(personRemoteDataSource, personLocalDataSource);
+    SessionRepository providePersonRepository(SessionRemoteDataSource sessionRemoteDataSource, SessionLocalDataSource sessionLocalDataSource) {
+        return new SessionRepository(sessionRemoteDataSource, sessionLocalDataSource);
     }
 }

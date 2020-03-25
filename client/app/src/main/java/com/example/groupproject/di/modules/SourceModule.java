@@ -3,8 +3,8 @@ package com.example.groupproject.di.modules;
 import android.app.Application;
 
 import com.example.groupproject.data.network.request.VolleyRequest;
-import com.example.groupproject.data.sources.local.PersonLocalDataSource;
-import com.example.groupproject.data.sources.remote.PersonRemoteDataSource;
+import com.example.groupproject.data.sources.local.SessionLocalDataSource;
+import com.example.groupproject.data.sources.remote.SessionRemoteDataSource;
 import com.google.gson.Gson;
 
 import javax.inject.Singleton;
@@ -16,13 +16,13 @@ import dagger.Provides;
 public class SourceModule {
     @Provides
     @Singleton
-    PersonRemoteDataSource providePersonRemoteDataSource(VolleyRequest volleyRequest) {
-        return new PersonRemoteDataSource(volleyRequest);
+    SessionRemoteDataSource providePersonRemoteDataSource(VolleyRequest volleyRequest) {
+        return new SessionRemoteDataSource(volleyRequest);
     }
 
     @Provides
     @Singleton
-    PersonLocalDataSource providePersonLocalDataSource(Application application, Gson gson) {
-        return new PersonLocalDataSource(application.getApplicationContext(), gson);
+    SessionLocalDataSource providePersonLocalDataSource(Application application, Gson gson) {
+        return new SessionLocalDataSource(application.getApplicationContext(), gson);
     }
 }

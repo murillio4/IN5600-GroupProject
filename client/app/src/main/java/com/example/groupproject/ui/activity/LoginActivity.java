@@ -2,8 +2,10 @@ package com.example.groupproject.ui.activity;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import android.text.Editable;
@@ -62,23 +64,17 @@ public class LoginActivity extends DaggerAppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                updateUiWithUser(loginResult.getSuccess());
-
-                setResult(Activity.RESULT_OK);
-                finish();
+                showLoginSuccess(loginResult.getSuccess());
+                startMainActivity();
             }
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -104,14 +100,17 @@ public class LoginActivity extends DaggerAppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        // prevent user from ignoring sign in
+    public void onBackPressed() {}
+
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    private void showLoginSuccess(@NonNull LoggedInUserView loggedInUserView) {
+        Toast.makeText(getApplicationContext(), loggedInUserView.getDisplayName(),
+                Toast.LENGTH_SHORT).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

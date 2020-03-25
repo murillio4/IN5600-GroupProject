@@ -1,40 +1,30 @@
 package com.example.groupproject.data.repositories;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
-import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.NetworkBoundResource;
 import com.example.groupproject.data.Resource;
-import com.example.groupproject.data.network.model.Result;
-import com.example.groupproject.data.sources.local.PersonLocalDataSource;
-import com.example.groupproject.data.sources.remote.PersonRemoteDataSource;
+import com.example.groupproject.data.sources.local.SessionLocalDataSource;
+import com.example.groupproject.data.sources.remote.SessionRemoteDataSource;
 import com.example.groupproject.data.model.Person;
-import com.google.gson.Gson;
-
-import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class PersonRepository {
-    private PersonRemoteDataSource remoteDataSource;
-    private PersonLocalDataSource localDataSource;
+public class SessionRepository {
+    private SessionRemoteDataSource remoteDataSource;
+    private SessionLocalDataSource localDataSource;
 
+    private PublishSubject<Person> personPublishSubject = PublishSubject.create();
 
-    public PersonRepository(PersonRemoteDataSource remoteDataSource, PersonLocalDataSource localDataSource) {
+    public SessionRepository(SessionRemoteDataSource remoteDataSource, SessionLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
-
     }
 
     public boolean isLoggedIn() {
@@ -43,6 +33,7 @@ public class PersonRepository {
 
     public void logout() {
         localDataSource.removeUser();
+        personPublishSubject.onError(new Throwable("User logged out"));
     }
 
     public Observable<Resource<Person>> login(String username, String password) {
@@ -56,6 +47,7 @@ public class PersonRepository {
             @Override
             protected void saveRemoteResult(@NonNull Person item) {
                 localDataSource.setUser(item);
+                personPublishSubject.onNext(item);
             }
 
             @NonNull
@@ -81,7 +73,11 @@ public class PersonRepository {
         }.getAsObservable();
     }
 
-    public Person getUser() {
+    public Observable<Person> observeSession() {
+        return personPublishSubject;
+    }
+
+    public Person getSession() {
         return localDataSource.getUser();
     }
 }

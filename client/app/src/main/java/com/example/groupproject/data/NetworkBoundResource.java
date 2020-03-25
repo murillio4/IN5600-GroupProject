@@ -46,16 +46,19 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         );
     }
 
-    public Observable<Resource<ResultType>> getAsObservable() {return result;}
+    public Observable<Resource<ResultType>> getAsObservable() {
+        return result;
+    }
 
     @MainThread
     protected abstract boolean shouldFetchRemote();
 
-    protected void onRemoteFetchError(Throwable t) {
-    }
+    protected void onRemoteFetchError(Throwable t) { }
 
     @WorkerThread
-    protected RequestType processResponse(Resource<RequestType> response) {return response.getData();}
+    protected RequestType processResponse(Resource<RequestType> response) {
+        return response.getData();
+    }
 
     @WorkerThread
     protected abstract void saveRemoteResult(@NonNull RequestType item);

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
 
+// Write in newer syntax
 public class AppController extends Application implements HasAndroidInjector {
 
     @Inject
