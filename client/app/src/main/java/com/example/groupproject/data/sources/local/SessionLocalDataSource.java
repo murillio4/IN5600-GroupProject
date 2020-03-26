@@ -14,9 +14,10 @@ public class SessionLocalDataSource {
 
     public SessionLocalDataSource(Context context, Gson gson) {
         this.gson = gson;
-        this.pref = context.getSharedPreferences(Constants.SharedPreferences.Name, Context.MODE_PRIVATE);
+        this.pref = context.getSharedPreferences(
+                Constants.SharedPreferences.Name.Person, Context.MODE_PRIVATE);
 
-        String userString = pref.getString(Constants.SharedPreferences.Keys.User, null);
+        String userString = pref.getString(Constants.SharedPreferences.Keys.Person, null);
         this.user = userString == null
                 ? null
                 : gson.fromJson(userString, Person.class);
@@ -26,7 +27,7 @@ public class SessionLocalDataSource {
         this.user = user;
 
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString(Constants.SharedPreferences.Keys.User, new Gson().toJson(user));
+        editor.putString(Constants.SharedPreferences.Keys.Person, new Gson().toJson(user));
         editor.apply();
     }
 

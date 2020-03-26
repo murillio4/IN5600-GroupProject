@@ -52,6 +52,7 @@ public class LoginViewModel extends AndroidViewModel {
                             case LOADING:
                                 break;
                             case ERROR:
+                                //Gir dette mening? Skal ta imot integer men får string???
                                 loginResult.setValue(new LoginResult(R.string.login_failed));
                                 dispose();
                                 break;
@@ -73,6 +74,10 @@ public class LoginViewModel extends AndroidViewModel {
                     @Override
                     public void onComplete() {}
                 });
+    }
+
+    public Person getLoggedInPerson() {
+        return sessionRepository.getSession();
     }
 
     public void loginDataChanged(String username, String password) {

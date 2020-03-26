@@ -5,25 +5,50 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.groupproject.R;
+import com.example.groupproject.data.Status;
+import com.example.groupproject.data.model.ClaimList;
+import com.example.groupproject.data.model.Claims;
+import com.example.groupproject.data.model.Person;
+import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
+import com.example.groupproject.ui.viewModel.ClaimsViewModel;
+import com.example.groupproject.ui.viewModel.LoginViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
-import dagger.android.support.DaggerAppCompatActivity;
+import javax.inject.Inject;
 
 public class MainActivity extends SessionActivity {
+
+    private static final String TAG = "MainActivity";
+
+    @Inject
+    ClaimsViewModel claimsViewModel;
+
+    @Inject
+    LoginViewModel loginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initToolbar();
+        initCreateNewClaimFloatingActionButton();
+
+        Person loggedInPerson = loginViewModel.getLoggedInPerson();
+        fetchClaimsForPersonWithId(loggedInPerson.getId());
     }
 
     @Override
@@ -41,5 +66,48 @@ public class MainActivity extends SessionActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initCreateNewClaimFloatingActionButton() {
+        FloatingActionButton floatingActionButton = findViewById(R.id.create_new_claim_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Create new claim", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void initClaimListRecyclerView(ClaimList claimList) {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        ClaimListRecyclerViewAdapter claimListRecyclerViewAdapter =
+                new ClaimListRecyclerViewAdapter(this, claimList);
+        recyclerView.setAdapter(claimListRecyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    private void fetchClaimsForPersonWithId(String id) {
+        claimsViewModel.getClaims(id).observe(this, claimsResult -> {
+            switch (claimsResult.getStatus()) {
+                case LOADING:
+                    Log.d(TAG, "onCreate: Loading resource");
+                    break;
+                case ERROR:
+                    Log.d(TAG, "onCreate: Failed to fetch get claims");
+                    break;
+                case SUCCESS:
+                    Log.d(TAG, "onCreate: Successfully fetched claims");
+                    initClaimListRecyclerView(claimsResult.getData());
+                    break;
+                default:
+                    Log.d(TAG, "onCreate: Unknown result");
+                    break;
+            }
+        });
     }
 }
