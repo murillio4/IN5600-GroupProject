@@ -1,15 +1,12 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.activity;
 
 import android.app.Activity;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,23 +17,25 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
-import com.example.groupproject.ui.login.LoginViewModel;
-import com.example.groupproject.ui.login.LoginViewModelFactory;
+import com.example.groupproject.ui.view.LoggedInUserView;
+import com.example.groupproject.ui.viewModel.LoginViewModel;
 
-public class LoginActivity extends AppCompatActivity {
+import javax.inject.Inject;
 
-    private LoginViewModel loginViewModel;
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class LoginActivity extends DaggerAppCompatActivity {
+
+    @Inject
+    public LoginViewModel loginViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(getApplication()))
-                .get(LoginViewModel.class);
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
@@ -65,23 +64,17 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                updateUiWithUser(loginResult.getSuccess());
-
-                setResult(Activity.RESULT_OK);
-                finish();
+                showLoginSuccess(loginResult.getSuccess());
+                startMainActivity();
             }
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -107,14 +100,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        // prevent user from ignoring sign in
+    public void onBackPressed() {}
+
+    private void startMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    private void showLoginSuccess(@NonNull LoggedInUserView loggedInUserView) {
+        String welcome = getString(R.string.welcome) + loggedInUserView.getDisplayName();
+        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

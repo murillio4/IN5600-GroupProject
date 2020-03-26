@@ -1,57 +1,78 @@
-package com.example.groupproject.ui.login;
+package com.example.groupproject.ui.viewModel;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import android.app.Application;
 import android.util.Patterns;
 
-import com.example.groupproject.data.repositories.LoginRepository;
-import com.example.groupproject.data.network.model.Result;
+import com.example.groupproject.data.Resource;
+import com.example.groupproject.data.repositories.SessionRepository;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
+import com.example.groupproject.ui.view.LoggedInUserView;
+import com.example.groupproject.ui.state.LoginFormState;
+import com.example.groupproject.ui.result.LoginResult;
+
+import javax.inject.Inject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class LoginViewModel extends AndroidViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private SessionRepository sessionRepository;
 
-    private final Observer<Result<Person>> loginObserver = result -> {
-        if (result.getStatus() == Result.Status.SUCCESS) {
-            if (result.getData() == null) {
-                loginResult.setValue(new LoginResult(R.string.login_failed));
-            } else {
-                Person data = result.getData();
-                loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
-            }
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
-    };
-
-    public LoginViewModel(Application application, LoginRepository loginRepository) {
+    @Inject
+    public LoginViewModel(Application application, SessionRepository sessionRepository) {
         super(application);
-        this.loginRepository = loginRepository;
+        this.sessionRepository = sessionRepository;
     }
 
-    LiveData<LoginFormState> getLoginFormState() {
+    public LiveData<LoginFormState> getLoginFormState() {
         return loginFormState;
     }
 
-    LiveData<LoginResult> getLoginResult() {
+    public LiveData<LoginResult> getLoginResult() {
         return loginResult;
     }
 
     public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        LiveData<Result<Person>> result = loginRepository.login(username, md5(password));
-        result.observeForever(loginObserver);
+        sessionRepository.login(username, md5(password))
+                .subscribe(new DisposableObserver<Resource<Person>>() {
+                    @Override
+                    public void onNext(@NonNull Resource<Person> personResource) {
+                        switch (personResource.getStatus()) {
+                            case LOADING:
+                                break;
+                            case ERROR:
+                                loginResult.setValue(new LoginResult(R.string.login_failed));
+                                dispose();
+                                break;
+                            case SUCCESS:
+                                if (personResource.getData() == null) {
+                                    loginResult.setValue(new LoginResult(R.string.login_failed));
+                                } else {
+                                    Person data = personResource.getData();
+                                    loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
+                                }
+                                dispose();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {}
+
+                    @Override
+                    public void onComplete() {}
+                });
     }
 
     public void loginDataChanged(String username, String password) {
@@ -66,7 +87,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 
     public void logout() {
-        loginRepository.logout();
+        sessionRepository.logout();
     }
 
     private String md5(String password) {
@@ -107,13 +128,5 @@ public class LoginViewModel extends AndroidViewModel {
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 3;
-    }
-
-    public boolean isLoggedIn() {
-        return loginRepository.isLoggedIn();
-    }
-
-    public Person getUser() {
-        return loginRepository.getUser();
     }
 }
