@@ -7,7 +7,7 @@ public class Result<T> {
         SUCCESS,
         ERROR
     }
-
+    @Nullable
     private final Status status;
     @Nullable
     private final T data;

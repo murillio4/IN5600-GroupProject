@@ -4,8 +4,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -14,12 +12,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.example.groupproject.data.network.model.Result;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.AsyncSubject;
 
 public class BaseRequest<T> extends Request<T> {
 
@@ -29,13 +31,16 @@ public class BaseRequest<T> extends Request<T> {
 
     private String body;
 
-    private MutableLiveData<Result<T>> result = new MutableLiveData<>();
+    private AsyncSubject<Optional<T>> result = AsyncSubject.create();
 
-    protected BaseRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body) {
+    private RequestQueue requestQueue;
+
+    protected BaseRequest(int method, String url, Map<String, String> headers, Map<String, Object> bodyParams, @Nullable String body, RequestQueue requestQueue) {
         super(method, url, null);
         this.headers = headers;
         this.bodyParams = bodyParams;
         this.body = body;
+        this.requestQueue = requestQueue;
     }
 
     @Override
@@ -48,13 +53,15 @@ public class BaseRequest<T> extends Request<T> {
     }
 
     @Override
-    protected void deliverResponse(T response) {
-        result.setValue(Result.success(response));
+    protected void deliverResponse(@Nullable T response) {
+        result.onNext(Optional.ofNullable(response));
+        result.onComplete();
     }
 
     @Override
     public void deliverError(VolleyError error) {
-        result.setValue(Result.error(error));
+        result.onError(error);
+        result.onComplete();
     }
 
     @Override
@@ -71,7 +78,7 @@ public class BaseRequest<T> extends Request<T> {
         return body != null ? body.getBytes() : null;
     }
 
-    public LiveData<Result<T>> enqueue(RequestQueue requestQueue) {
+    public Observable<Optional<T>> enqueue() {
         requestQueue.add(this);
         return result;
     }
@@ -89,6 +96,8 @@ public class BaseRequest<T> extends Request<T> {
 
         int method;
 
+        RequestQueue requestQueue;
+
         Builder(int method, String url) {
             this.url = url;
             this.method = method;
@@ -103,6 +112,11 @@ public class BaseRequest<T> extends Request<T> {
             }
 
             return url;
+        }
+
+        public Builder<T> setRequestQueue(RequestQueue requestQueue) {
+            this.requestQueue = requestQueue;
+            return this;
         }
 
         public Builder<T> addHeader(String key, String value) {
@@ -126,7 +140,7 @@ public class BaseRequest<T> extends Request<T> {
         }
 
         public BaseRequest<T> build() {
-            return new BaseRequest<T>(method, buildUrl(), headers, bodyParams, body);
+            return new BaseRequest<T>(method, buildUrl(), headers, bodyParams, body, requestQueue);
         }
 
         public static <T> Builder<T> get(String url) {
