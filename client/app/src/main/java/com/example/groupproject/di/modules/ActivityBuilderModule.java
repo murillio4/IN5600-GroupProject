@@ -1,5 +1,6 @@
 package com.example.groupproject.di.modules;
 
+import com.example.groupproject.ui.activity.DisplayClaimActivity;
 import com.example.groupproject.ui.activity.LoginActivity;
 import com.example.groupproject.ui.activity.MainActivity;
 
@@ -14,4 +15,7 @@ public abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector
     abstract LoginActivity contributeLoginActivity();
+
+    @ContributesAndroidInjector
+    abstract DisplayClaimActivity contributeDisplayActivity();
 }

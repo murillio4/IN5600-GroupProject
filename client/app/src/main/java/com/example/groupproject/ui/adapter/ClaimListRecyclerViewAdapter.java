@@ -1,6 +1,8 @@
 package com.example.groupproject.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.groupproject.R;
+import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
+import com.example.groupproject.ui.activity.DisplayClaimActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,6 +62,12 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Clicked on: " + claim.getId());
                 Toast.makeText(context, "Clicked on: " + claim.getId(), Toast.LENGTH_LONG).show();
+
+                Bundle extras = new Bundle();
+                extras.putSerializable(Constants.Serializable.Claim, claim);
+                Intent intent = new Intent(context, DisplayClaimActivity.class);
+                intent.putExtras(extras);
+                context.startActivity(intent);
             }
         });
     }
