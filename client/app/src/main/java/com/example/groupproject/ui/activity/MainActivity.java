@@ -2,38 +2,32 @@ package com.example.groupproject.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.data.model.Person;
-import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
+import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DropdownMenuFragment;
-import com.example.groupproject.ui.viewModel.ClaimsViewModel;
-import com.example.groupproject.ui.viewModel.LoginViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends SessionActivity {
 
     private static final String TAG = "MainActivity";
 
-    @Inject
-    ClaimsViewModel claimsViewModel;
-
-    @Inject
-    LoginViewModel loginViewModel;
+    final int REQUEST_SINGLE = 0;
+    final int REQUEST_MULTIPLE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +35,9 @@ public class MainActivity extends SessionActivity {
         setContentView(R.layout.activity_main);
 
         initToolbar();
-        initCreateNewClaimFloatingActionButton();
-
-        Person loggedInPerson = loginViewModel.getLoggedInPerson();
-        if (loggedInPerson != null) {
-            fetchClaimsForPersonWithId(loggedInPerson.getId());
-        }
+        requestPermissions(new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        });
     }
 
     @Override
@@ -54,6 +45,29 @@ public class MainActivity extends SessionActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                          String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_SINGLE: {
+                Log.d(TAG, "onRequestPermissionsResult: REQUEST_SINGLE");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initClaimListFragment();
+                } else {
+                    // Disable the functionality
+                }
+                break;
+            }
+            case REQUEST_MULTIPLE:
+                Log.d(TAG, "onRequestPermissionsResult: REQUEST_MULTIPLE");
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -66,9 +80,33 @@ public class MainActivity extends SessionActivity {
         }
     }
 
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    private void requestPermissions(String[] permissions) {
+        List<String> neededPermissions = new ArrayList<>();
+
+        for (String permission : permissions) {
+            if (needPermission(permission)) {
+                neededPermissions.add(permission);
+            }
+        }
+
+        int amountOfPermissionsNeeded = neededPermissions.size();
+        if (amountOfPermissionsNeeded > 0) {
+            ActivityCompat.requestPermissions(this,
+                    neededPermissions.toArray(new String[amountOfPermissionsNeeded]),
+                    amountOfPermissionsNeeded == 1 ? REQUEST_SINGLE : REQUEST_MULTIPLE);
+        }
+    }
+
+    private boolean needPermission(String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                return false; // Should ask for permission again after message to user
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     private void openDropdownMenu() {
@@ -76,36 +114,16 @@ public class MainActivity extends SessionActivity {
         new DropdownMenuFragment().showNow(fm);
     }
 
-    private void initCreateNewClaimFloatingActionButton() {
-        FloatingActionButton floatingActionButton = findViewById(R.id.create_new_claim_fab);
-        floatingActionButton.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "Create new claim", Toast.LENGTH_LONG).show());
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
-    private void initClaimListRecyclerView(ClaimList claimList) {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        ClaimListRecyclerViewAdapter claimListRecyclerViewAdapter =
-                new ClaimListRecyclerViewAdapter(this, claimList);
-        recyclerView.setAdapter(claimListRecyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    private void initClaimListFragment() {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_fragment_container, new ClaimListFragment());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
-    private void fetchClaimsForPersonWithId(String id) {
-        claimsViewModel.getClaims(id).observe(this, claimsResult -> {
-            switch (claimsResult.getStatus()) {
-                case LOADING:
-                    Log.d(TAG, "onCreate: Loading resource");
-                    break;
-                case ERROR:
-                    Log.d(TAG, "onCreate: Failed to fetch get claims");
-                    break;
-                case SUCCESS:
-                    Log.d(TAG, "onCreate: Successfully fetched claims");
-                    initClaimListRecyclerView(claimsResult.getData());
-                    break;
-                default:
-                    Log.d(TAG, "onCreate: Unknown result");
-                    break;
-            }
-        });
-    }
 }
