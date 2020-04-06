@@ -1,10 +1,9 @@
 package com.example.groupproject.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,19 +12,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.Status;
 import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.data.model.Claims;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
+import com.example.groupproject.ui.fragment.DropdownMenuFragment;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
@@ -48,7 +44,9 @@ public class MainActivity extends SessionActivity {
         initCreateNewClaimFloatingActionButton();
 
         Person loggedInPerson = loginViewModel.getLoggedInPerson();
-        fetchClaimsForPersonWithId(loggedInPerson.getId());
+        if (loggedInPerson != null) {
+            fetchClaimsForPersonWithId(loggedInPerson.getId());
+        }
     }
 
     @Override
@@ -60,8 +58,8 @@ public class MainActivity extends SessionActivity {
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sign_out:
-                sessionViewModel.removeSession();
+            case R.id.options_menu:
+                openDropdownMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -73,14 +71,14 @@ public class MainActivity extends SessionActivity {
         setSupportActionBar(toolbar);
     }
 
+    private void openDropdownMenu() {
+        FragmentManager fm = getSupportFragmentManager();
+        new DropdownMenuFragment().showNow(fm);
+    }
+
     private void initCreateNewClaimFloatingActionButton() {
         FloatingActionButton floatingActionButton = findViewById(R.id.create_new_claim_fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Create new claim", Toast.LENGTH_LONG).show();
-            }
-        });
+        floatingActionButton.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "Create new claim", Toast.LENGTH_LONG).show());
     }
 
     private void initClaimListRecyclerView(ClaimList claimList) {
