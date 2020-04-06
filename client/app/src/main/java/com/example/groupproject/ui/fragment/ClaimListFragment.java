@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,8 +54,14 @@ public class ClaimListFragment extends DaggerFragment {
     private void initCreateNewClaimFloatingActionButton() {
         FloatingActionButton floatingActionButton =
                 getView().findViewById(R.id.create_new_claim_fab);
-        floatingActionButton.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Create new claim", Toast.LENGTH_LONG).show());
+        floatingActionButton.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), "Create new claim", Toast.LENGTH_LONG).show();
+            // Make this cleaner!
+            FragmentTransaction fragmentTransaction =
+                    getChildFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment_container, new CreateClaimFragment());
+            fragmentTransaction.commit();
+        });
     }
 
     private void initClaimListRecyclerView(ClaimList claimList) {

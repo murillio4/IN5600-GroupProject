@@ -1,4 +1,5 @@
 package com.example.groupproject.di.modules.main;
+import com.example.groupproject.ui.fragment.CreateClaimFragment;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DropdownMenuFragment;
@@ -16,5 +17,8 @@ public abstract class MainFragmentBuilderModule {
     abstract ClaimListFragment contributeClaimListFragment();
 
     @ContributesAndroidInjector
-    abstract DisplayClaimFragment contributeDisplayFragment();
+    abstract DisplayClaimFragment contributeDisplayClaimFragment();
+
+    @ContributesAndroidInjector
+    abstract CreateClaimFragment contributeCreateClaimFragment();
 }

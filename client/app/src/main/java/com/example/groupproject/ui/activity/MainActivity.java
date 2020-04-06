@@ -128,7 +128,6 @@ public class MainActivity extends SessionActivity {
     private void initClaimListFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment_container, new ClaimListFragment());
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
