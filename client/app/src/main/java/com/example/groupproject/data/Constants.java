@@ -21,4 +21,8 @@ public interface Constants {
         String InsertClaim = "postInsertNewClaim";
         String UpdateClaim = "postUpdateClaim";
     }
+
+    interface Serializable {
+        String Claim = "CLAIM";
+    }
 }
