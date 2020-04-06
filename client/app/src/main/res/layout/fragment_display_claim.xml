@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
-    tools:context=".ui.activity.DisplayClaimActivity">
+    tools:context=".ui.fragment.DisplayClaimFragment">
 
     <TextView
         android:id="@+id/view_claim_id"
@@ -27,7 +27,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="20dp"
-        tools:context=".ui.activity.DisplayClaimActivity"
+        tools:context=".ui.fragment.DisplayClaimFragment"
         app:layout_constraintTop_toBottomOf="@id/view_claim_id"/>
 
     <Button

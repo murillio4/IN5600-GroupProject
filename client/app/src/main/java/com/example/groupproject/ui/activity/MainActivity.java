@@ -35,9 +35,13 @@ public class MainActivity extends SessionActivity {
         setContentView(R.layout.activity_main);
 
         initToolbar();
-        requestPermissions(new String[] {
+        int amountOfRequestedPermissions = requestPermissions(new String[] {
                 Manifest.permission.READ_EXTERNAL_STORAGE
         });
+
+        if (amountOfRequestedPermissions == 0) {
+            initClaimListFragment();
+        }
     }
 
     @Override
@@ -80,7 +84,7 @@ public class MainActivity extends SessionActivity {
         }
     }
 
-    private void requestPermissions(String[] permissions) {
+    private int requestPermissions(String[] permissions) {
         List<String> neededPermissions = new ArrayList<>();
 
         for (String permission : permissions) {
@@ -95,6 +99,8 @@ public class MainActivity extends SessionActivity {
                     neededPermissions.toArray(new String[amountOfPermissionsNeeded]),
                     amountOfPermissionsNeeded == 1 ? REQUEST_SINGLE : REQUEST_MULTIPLE);
         }
+
+        return amountOfPermissionsNeeded;
     }
 
     private boolean needPermission(String permission) {

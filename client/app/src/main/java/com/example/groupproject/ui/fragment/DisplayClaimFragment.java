@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.activity;
+package com.example.groupproject.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,7 +7,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,13 +28,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.inject.Inject;
 
-import dagger.android.support.DaggerAppCompatActivity;
+import dagger.android.support.DaggerFragment;
 
-public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnMapReadyCallback {
+public class DisplayClaimFragment extends DaggerFragment implements OnMapReadyCallback {
     private static final String TAG = "DisplayClaimActivity";
 
     @Inject
@@ -41,12 +42,16 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
     private Claim claim;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_claim);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_display_claim, container, false);
+    }
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle extras = getArguments();
         this.claim = (Claim) extras.getSerializable(Constants.Serializable.Claim);
 
         initIdTextView();
@@ -59,17 +64,13 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
 
     @Override
     public void onMapReady(GoogleMap map) {
-        String mapTitle = "Claim #" + claim.getId();
-        String[] locationArray = claim.getLocation().split(",", 2);
-        double lat = Double.parseDouble(locationArray[0]);
-        double lng = Double.parseDouble(locationArray[1]);
-        final LatLng location = new LatLng(lat, lng);
+        final String mapTitle = "Claim #" + claim.getId();
+        final LatLng location = stringLocationToLatLng(claim.getLocation());
 
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(location)
                 .zoom(10)
                 .bearing(0)
-                .tilt(45)
                 .build();
 
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -78,13 +79,30 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
         map.addMarker(new MarkerOptions().position(location).title(mapTitle));
     }
 
+    private LatLng stringLocationToLatLng(String locationString) {
+        String[] locationArray = claim.getLocation().split(",", 2);
+        if (locationArray.length <= 0) {
+            return new LatLng(0.0, 0.0);
+        }
+
+        try {
+            double lat = Double.parseDouble(locationArray[0]);
+            double lng = Double.parseDouble(locationArray[1]);
+            return new LatLng(lat, lng);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return new LatLng(0.0, 0.0);
+        }
+    }
+
     private void initIdTextView() {
-        final TextView idTextView = findViewById(R.id.view_claim_id);
+        final TextView idTextView = getView().findViewById(R.id.view_claim_id);
         idTextView.setText("Claim #" + claim.getId());
     }
 
     private void initMapFragment() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.view_claim_map_fragment);
         mapFragment.getMapAsync(this);
     }
@@ -92,7 +110,7 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
     // From https://developer.android.com/training/data-storage/shared/documents-files#open
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
+                getActivity().getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
@@ -104,7 +122,7 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
     }
 
     private void initImageButton() {
-        final Button imageButton = findViewById(R.id.view_claim_image_button);
+        final Button imageButton = getView().findViewById(R.id.view_claim_image_button);
 
         try {
             imageButton.setBackground(getBitmapDrawableFromUri(Uri.parse(claim.getPhotoPath())));
@@ -115,7 +133,7 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "View image", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "View image", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(claim.getPhotoPath()), "image/*");
@@ -125,20 +143,21 @@ public class DisplayClaimActivity extends DaggerAppCompatActivity implements OnM
     }
 
     private void initDescriptionTitleTextView() {
-        final TextView descriptionTitleTextView = findViewById(R.id.view_claim_description_title);
+        final TextView descriptionTitleTextView =
+                getView().findViewById(R.id.view_claim_description_title);
     }
 
     private void initDescriptionTextView() {
-        final TextView descriptionTextView = findViewById(R.id.view_claim_description);
+        final TextView descriptionTextView = getView().findViewById(R.id.view_claim_description);
         descriptionTextView.setText(claim.getDescription());
     }
 
     private void initEditButton() {
-        final Button editButton = findViewById(R.id.view_claim_edit_button);
+        final Button editButton = getView().findViewById(R.id.view_claim_edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Edit claim", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Edit claim", Toast.LENGTH_LONG).show();
             }
         });
     }

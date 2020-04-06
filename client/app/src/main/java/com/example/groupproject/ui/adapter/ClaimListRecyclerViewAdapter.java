@@ -1,7 +1,5 @@
 package com.example.groupproject.ui.adapter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,7 +19,7 @@ import com.example.groupproject.R;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.ui.activity.DisplayClaimActivity;
+import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,10 +27,10 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private Context context;
+    private FragmentActivity context;
     private ClaimList claimList;
 
-    public ClaimListRecyclerViewAdapter(Context context, ClaimList claimList) {
+    public ClaimListRecyclerViewAdapter(FragmentActivity context, ClaimList claimList) {
         this.context = context;
         this.claimList = claimList;
     }
@@ -65,9 +65,15 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
 
                 Bundle extras = new Bundle();
                 extras.putSerializable(Constants.Serializable.Claim, claim);
-                Intent intent = new Intent(context, DisplayClaimActivity.class);
-                intent.putExtras(extras);
-                context.startActivity(intent);
+
+                DisplayClaimFragment displayClaimFragment = new DisplayClaimFragment();
+                displayClaimFragment.setArguments(extras);
+
+                FragmentTransaction fragmentTransaction =
+                        context.getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_fragment_container, displayClaimFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
     }

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.Status;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
