@@ -8,6 +8,7 @@ import com.example.groupproject.ui.factory.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
+import com.example.groupproject.ui.viewModel.StorageViewModel;
 
 import javax.inject.Singleton;
 
@@ -38,4 +39,10 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ClaimsViewModel.class)
     protected abstract ViewModel claimsViewModel(ClaimsViewModel claimsViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StorageViewModel.class)
+    protected abstract ViewModel StorageViewModel(StorageViewModel storageViewModel);
+
 }
