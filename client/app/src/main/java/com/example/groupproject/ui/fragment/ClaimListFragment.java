@@ -58,8 +58,9 @@ public class ClaimListFragment extends DaggerFragment {
             Toast.makeText(getActivity(), "Create new claim", Toast.LENGTH_LONG).show();
             // Make this cleaner!
             FragmentTransaction fragmentTransaction =
-                    getChildFragmentManager().beginTransaction();
+                    getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment_container, new CreateClaimFragment());
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
     }

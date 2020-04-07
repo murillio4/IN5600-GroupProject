@@ -36,6 +36,8 @@ public class MainActivity extends SessionActivity {
 
         initToolbar();
         int amountOfRequestedPermissions = requestPermissions(new String[] {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE
         });
 
@@ -67,6 +69,7 @@ public class MainActivity extends SessionActivity {
             }
             case REQUEST_MULTIPLE:
                 Log.d(TAG, "onRequestPermissionsResult: REQUEST_MULTIPLE");
+                initClaimListFragment();
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
