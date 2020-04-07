@@ -19,16 +19,8 @@ public class StorageViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public File createImageFile(File storageDir, String suffix) throws IOException {
-        return File.createTempFile(
-                getImageFileName(),
-                checkSuffix(suffix),
-                storageDir
-        );
-    }
-
-    private String checkSuffix(String suffix) {
-        return suffix.charAt(0) != '.' ? "." + suffix : suffix;
+    public File createImageFile(File storageDir) throws IOException {
+        return File.createTempFile(getImageFileName(), ".jpg", storageDir);
     }
 
     private String getTimeStampString() {

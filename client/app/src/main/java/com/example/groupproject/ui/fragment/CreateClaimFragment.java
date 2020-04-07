@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.groupproject.BuildConfig;
 import com.example.groupproject.R;
 import com.example.groupproject.ui.viewModel.StorageViewModel;
 
@@ -152,21 +154,23 @@ public class CreateClaimFragment extends DaggerFragment {
 
     private void startImageCaptureActivity() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Context context = getActivity();
+        Context context = getContext();
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             File imageFile = null;
+
             try {
                 imageFile = storageViewModel.createImageFile(
-                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "jpg");
+                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             } catch (IOException e) {
                 e.printStackTrace();
+                // Handle better?
             }
 
             if (imageFile != null) {
                 Uri imageUri = FileProvider.getUriForFile(
-                        context, "com.example.android.fileprovider", imageFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFile);
                 startActivityForResult(intent, REQUEST_CODE.CAMERA.ordinal());
             }
         }
@@ -174,62 +178,13 @@ public class CreateClaimFragment extends DaggerFragment {
 
     private void startGalleryActivity() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_CODE.GALLERY.ordinal());
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_CODE.GALLERY.ordinal());
+        }
     }
 
     private void handleImageCaptureActivityResult(Intent data) {
-        Bundle extras = data.getExtras();
-        Bitmap imageBitmap = (Bitmap) extras.get("data");
-        Button button = getView().findViewById(R.id.create_claim_add_photo_button);
-        button.setBackground(new BitmapDrawable(null, imageBitmap));
-
-        //File externalStorage = new File(Environment.getExternalStorageState().toString());
-        //File tmpImageFile = null;
-
-        //for (File tmpFile : externalStorage.listFiles()) {
-        //    if (tmpFile.getName().equals(TMP_FILE_NAME)) {
-        //        tmpImageFile = tmpFile;
-        //        break;
-        //    }
-        //}
-
-        //if (tmpImageFile == null) {
-        //    return; // Handle ...
-        //}
-
-        //try {
-        //    Bitmap bitmap = BitmapFactory.decodeFile(tmpImageFile.getAbsolutePath());
-        //    tmpImageFile.delete();
-
-        //    //Set as background to the button? need bitmap to bitmapDrawable
-
-        //    String imageDirPath = Objects.requireNonNull(getActivity())
-        //            .getExternalFilesDir(null).getAbsolutePath()
-        //            + File.separator + "MaHe"
-        //            + File.separator + "default";
-
-
-        //    // Can be one function
-        //    File newImageFile = new File(imageDirPath,
-        //            String.valueOf(System.currentTimeMillis()) + "jpg");
-        //    OutputStream outputStream = null;
-
-        //    try {
-        //        outputStream = new FileOutputStream(newImageFile);
-        //        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outputStream);
-        //        outputStream.flush();
-        //        outputStream.close();
-        //    } catch (FileNotFoundException e) {
-        //        e.printStackTrace(); // Handle better?
-        //    } catch (IOException e) {
-        //        e.printStackTrace(); // Handle better?
-        //    } catch (Exception e) {
-        //        e.printStackTrace(); // Handle better?
-        //    }
-        //} catch (Exception e) {
-        //    e.printStackTrace(); // Handle better?
-        //}
-
     }
 
     private void handleGalleryActivityResult(Intent data) {

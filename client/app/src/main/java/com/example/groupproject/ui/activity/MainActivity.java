@@ -100,7 +100,7 @@ public class MainActivity extends SessionActivity {
         if (amountOfPermissionsNeeded > 0) {
             ActivityCompat.requestPermissions(this,
                     neededPermissions.toArray(new String[amountOfPermissionsNeeded]),
-                    amountOfPermissionsNeeded == 1 ? REQUEST_SINGLE : REQUEST_MULTIPLE);
+                    REQUEST_MULTIPLE);
         }
 
         return amountOfPermissionsNeeded;
