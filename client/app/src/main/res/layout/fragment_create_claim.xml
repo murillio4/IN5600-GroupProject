@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:text="New Claim"
+        android:text="@string/create_claim_title"
         android:textSize="20sp"
         android:textColor="#404140"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:text="Description"
+        android:text="@string/claim_description"
         android:textSize="16sp"
         android:textColor="#404140"
         app:layout_constraintTop_toBottomOf="@id/create_claim_title"
@@ -39,17 +39,19 @@
         android:gravity="start"
         android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@id/create_claim_description_title"
-        app:layout_constraintBottom_toTopOf="@+id/create_claim_add_map_location_button" />
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_add_map_location_button"
+        android:autofillHints=""
+        android:inputType="text" />
 
     <Button
         android:id="@+id/create_claim_add_map_location_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:paddingLeft="10dp"
+        android:paddingHorizontal="10dp"
         android:gravity="start|center"
         android:background="#FECD38"
-        android:text="Add Map Location"
+        android:text="@string/claim_add_map_location"
         app:layout_constraintTop_toBottomOf="@id/create_claim_description_input"
         app:layout_constraintBottom_toTopOf="@+id/create_claim_add_photo_button" />
 
@@ -58,10 +60,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
+        android:paddingHorizontal="10dp"
         android:gravity="start|center"
         android:background="#FECD38"
-        android:text="Add Photo"
+        android:text="@string/claim_add_photo"
         app:layout_constraintTop_toBottomOf="@id/create_claim_add_map_location_button"
         app:layout_constraintBottom_toTopOf="@+id/create_claim_submit_button" />
 
@@ -72,7 +74,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="20dp"
-        android:text="Submit"
+        android:text="@string/claim_submit"
         android:textColor="#FFFFFF"
         android:background="#404140"
         app:layout_constraintBottom_toBottomOf="parent" />

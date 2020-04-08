@@ -16,4 +16,12 @@
 
     <string name="title_main_activity">ASS Insurance</string>
 
+
+    <!--Create/Update Claim-->
+    <string name="create_claim_title">Create claim</string>
+    <string name="claim_description">Description</string>
+    <string name="claim_add_photo">Add Photo</string>
+    <string name="claim_add_map_location">Add Map Location</string>
+    <string name="claim_submit">Submit</string>
+
 </resources>

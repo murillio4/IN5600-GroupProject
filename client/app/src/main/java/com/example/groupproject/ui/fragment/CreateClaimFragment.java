@@ -135,18 +135,19 @@ public class CreateClaimFragment extends DaggerFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Select an Option");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (options[which].equals("Take Photo")) {
+        builder.setItems(options, (dialog, which) -> {
+            switch (options[which]) {
+                case "Take Photo":
                     startImageCaptureActivity();
-                } else if (options[which].equals("Choose from Gallery")) {
+                    break;
+                case "Choose from Gallery":
                     startGalleryActivity();
-                } else if (options[which].equals("Cancel")) {
+                    break;
+                case "Cancel":
                     dialog.dismiss();
-                } else {
-                    // Handle this?
-                }
+                    break;
+                default:
+                    break;
             }
         });
         builder.show();
@@ -157,21 +158,19 @@ public class CreateClaimFragment extends DaggerFragment {
         Context context = getContext();
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
-            File imageFile = null;
-
             try {
-                imageFile = storageViewModel.createImageFile(
+                File imageFile = storageViewModel.createImageFile(
                         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Handle better?
-            }
 
-            if (imageFile != null) {
-                Uri imageUri = FileProvider.getUriForFile(
-                        context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFile);
-                startActivityForResult(intent, REQUEST_CODE.CAMERA.ordinal());
+                if (imageFile != null) {
+                    Uri imageUri = FileProvider.getUriForFile(
+                            context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(intent, REQUEST_CODE.CAMERA.ordinal());
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "startImageCaptureActivity: Error creating image file", e);
             }
         }
     }
