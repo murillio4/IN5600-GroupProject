@@ -51,6 +51,8 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
     @Inject
     Context context;
 
+    private String imageFileAbsolutePath = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,16 +82,13 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
-                            Log.i(TAG, "requestStoragePermission: permissions granted");
+                            Log.i(TAG, "requestStoragePermission: All permissions granted");
                             callback.run();
                         }
-                        // check for permanent denial of any permission
-                        // if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            //showSettingsDialog();
-                        //}
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.d(TAG, "onPermissionsChecked: Some permissions permanently denied");
+                        }
                     }
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
@@ -146,11 +145,12 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
             try {
                 File imageFile = ImageUtil.createImageFile(
                         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                imageFileAbsolutePath = null;
 
                 if (imageFile != null) {
                     Uri imageUri = FileProvider.getUriForFile(
                             context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
-
+                    imageFileAbsolutePath = imageFile.getAbsolutePath();
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, Constants.REQUEST_CODE.CAMERA.ordinal());
                 }
@@ -171,12 +171,16 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
     }
 
     private void handleImageCaptureActivityResult(Intent data) {
-        Uri imageUri = data.getData();
-        Toast.makeText(context, "Image: " + imageUri, Toast.LENGTH_SHORT).show();
+        if (imageFileAbsolutePath != null) {
+            Log.d(TAG, "handleImageCaptureActivityResult: Image: " + imageFileAbsolutePath);
+        }
     }
 
     private void handleGalleryActivityResult(Intent data) {
         Uri imageUri = data.getData();
-        Toast.makeText(context, "Image: " + imageUri, Toast.LENGTH_SHORT).show();
+        imageFileAbsolutePath = imageUri.getPath(); // NOT CORRECT ?
+        Log.d(TAG, "handleGalleryActivityResult: Image: " + imageFileAbsolutePath);
     }
+
+
 }
