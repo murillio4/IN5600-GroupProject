@@ -9,13 +9,9 @@ import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
-import com.example.groupproject.ui.viewModel.StorageViewModel;
-
-import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 //inspired by https://github.com/anitaa1990/Dagger2-Sample
@@ -40,11 +36,6 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ClaimsViewModel.class)
     protected abstract ViewModel claimsViewModel(ClaimsViewModel claimsViewModel);
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(StorageViewModel.class)
-    protected abstract ViewModel StorageViewModel(StorageViewModel storageViewModel);
 
     @Binds
     @IntoMap

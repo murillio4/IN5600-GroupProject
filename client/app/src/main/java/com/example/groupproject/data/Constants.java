@@ -25,4 +25,9 @@ public interface Constants {
     interface Serializable {
         String Claim = "CLAIM";
     }
+
+    enum REQUEST_CODE {
+        CAMERA,
+        GALLERY
+    }
 }

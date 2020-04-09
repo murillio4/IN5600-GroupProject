@@ -14,14 +14,14 @@
         android:text="@string/photo_dialog_title" />
 
     <Button
-        android:id="@+id/photo_dialog_gallery_btn"
+        android:id="@+id/photo_dialog_photo_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorYellow"
         android:text="@string/photo_dialog_open_gallery" />
 
     <Button
-        android:id="@+id/photo_dialog_photo_btn"
+        android:id="@+id/photo_dialog_gallery_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorYellow"
