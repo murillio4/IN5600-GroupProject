@@ -1,6 +1,6 @@
 package com.example.groupproject.di.modules;
 
-import android.app.Application;
+import android.content.Context;
 
 import com.example.groupproject.data.network.request.VolleyRequest;
 import com.example.groupproject.data.sources.local.ClaimsLocalDataSource;
@@ -24,8 +24,8 @@ public class SourceModule {
 
     @Provides
     @Singleton
-    SessionLocalDataSource providePersonLocalDataSource(Application application, Gson gson) {
-        return new SessionLocalDataSource(application.getApplicationContext(), gson);
+    SessionLocalDataSource providePersonLocalDataSource(Context context, Gson gson) {
+        return new SessionLocalDataSource(context, gson);
     }
 
     @Provides
@@ -36,7 +36,7 @@ public class SourceModule {
 
     @Provides
     @Singleton
-    ClaimsLocalDataSource provideClaimsLocalDataSource(Application application, Gson gson) {
-        return new ClaimsLocalDataSource(application.getApplicationContext(), gson);
+    ClaimsLocalDataSource provideClaimsLocalDataSource(Context context, Gson gson) {
+        return new ClaimsLocalDataSource(context, gson);
     }
 }

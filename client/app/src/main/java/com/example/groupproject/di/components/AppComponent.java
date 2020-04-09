@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.groupproject.AppController;
 import com.example.groupproject.di.modules.ActivityBuilderModule;
+import com.example.groupproject.di.modules.MiscModule;
 import com.example.groupproject.di.modules.NetworkModule;
 import com.example.groupproject.di.modules.RepositoryModule;
 import com.example.groupproject.di.modules.SourceModule;
@@ -21,6 +22,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Singleton
 @Component(
     modules = {
+        MiscModule.class,
         NetworkModule.class,
         SourceModule.class,
         RepositoryModule.class,

@@ -10,9 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.groupproject.data.Resource;
 import com.example.groupproject.data.Status;
 import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.data.model.Claims;
 import com.example.groupproject.data.repositories.ClaimsRepository;
-import com.example.groupproject.ui.result.Result;
 
 import javax.inject.Inject;
 

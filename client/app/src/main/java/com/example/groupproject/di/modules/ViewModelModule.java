@@ -7,6 +7,7 @@ import com.example.groupproject.di.ViewModelKey;
 import com.example.groupproject.ui.factory.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
+import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
 import com.example.groupproject.ui.viewModel.StorageViewModel;
 
@@ -44,5 +45,10 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(StorageViewModel.class)
     protected abstract ViewModel StorageViewModel(StorageViewModel storageViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PhotoViewModel.class)
+    protected abstract ViewModel PhotoViewModel(PhotoViewModel photoViewModel);
 
 }

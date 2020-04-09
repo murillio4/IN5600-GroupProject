@@ -24,4 +24,10 @@
     <string name="claim_add_map_location">Add Map Location</string>
     <string name="claim_submit">Submit</string>
 
+    <!--Photo Dialog-->
+    <string name="photo_dialog_title">Select an option</string>
+    <string name="photo_dialog_take_photo">From gallery</string>
+    <string name="photo_dialog_open_gallery">Take photo</string>
+    <string name="photo_dialog_cancel">Cancel</string>
+
 </resources>

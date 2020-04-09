@@ -57,18 +57,18 @@ public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implemen
     }
 
     public void showNow(FragmentManager fragmentManager) {
-        super.showNow(fragmentManager, TAG);
+        showNow(fragmentManager, TAG);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.close_dropdown_menu:
-                super.dismiss();
+                dismiss();
                 break;
             case R.id.sign_out:
                 sessionViewModel.removeSession();
-                super.dismiss();
+                dismiss();
                 break;
             default:
                 break;
