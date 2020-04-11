@@ -1,12 +1,18 @@
 package com.example.groupproject.data.util;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,12 +24,70 @@ public class ImageUtil {
 
         private Storage() {}
 
+        public static Uri saveBitmap(@NonNull Context context, @NonNull Bitmap bitmap,
+                              @NonNull String displayName) throws IOException {
+            ContentValues contentValues = createContentValues(
+                    displayName, "image/jpg", Environment.DIRECTORY_PICTURES);
+            ContentResolver contentResolver = context.getContentResolver();
+
+            OutputStream outputStream = null;
+            Uri imageUri = null;
+
+            try {
+                Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+                imageUri = contentResolver.insert(contentUri, contentValues);
+                if (imageUri == null) {
+                    throw new IOException("Failed to create image URI!");
+                }
+
+                outputStream = contentResolver.openOutputStream(imageUri);
+                if (outputStream == null) {
+                    throw new IOException("Failed to open output stream!");
+                }
+
+                // Move to compressor class
+                if (bitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream) == false) {
+                    throw new IOException("Failed to save bitmap");
+                }
+            } catch (IOException e) {
+                if (imageUri != null) {
+                    contentResolver.delete(imageUri, null, null);
+                }
+            } finally {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+
+            return imageUri;
+        }
+
+        public Uri saveImageFile(@NonNull Context context,
+                                 @NonNull File imageFile) throws IOException {
+            return null;
+        }
+
+        public Uri saveImage(@NonNull Context context, @NonNull Uri imageUri) throws IOException {
+            return null;
+        }
+
         public static File createImageFile(@NonNull Context context) throws IOException {
             return File.createTempFile(
                     getImageFileName(),
                     ".jpg",
                     context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             );
+        }
+
+        private static ContentValues createContentValues(@NonNull String displayName,
+                                                  @NonNull String mimeType,
+                                                  @NonNull String relativePath) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
+            return contentValues;
         }
 
         private static String getTimeStampString() {
@@ -39,6 +103,11 @@ public class ImageUtil {
     public static class Compressor {
 
         private Compressor() {}
+
+        private String destinationDirectory(@NonNull Context context) {
+            return context.getCacheDir().getPath() + File.separator + "images";
+        }
+
 
     }
 

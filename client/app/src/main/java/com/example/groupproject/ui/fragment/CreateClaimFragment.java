@@ -3,6 +3,7 @@ package com.example.groupproject.ui.fragment;
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,27 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
         view.findViewById(R.id.create_claim_submit_button).setOnClickListener(this);
 
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: Here?");
+
+        photoViewModel.getPhotoResult().observe(this, photoResult -> {
+            if (photoResult == null) {
+                Log.d(TAG, "onCreate: No photo result");
+                return;
+            }
+
+            if (photoResult.getSuccess() != null) {
+                Log.d(TAG, "onCreate: PhotoResult: " + photoResult.getSuccess());
+            }
+
+            if (photoResult.getError() != null) {
+                Log.d(TAG, "onCreate: PhotoResult: " + photoResult.getError());
+            }
+        });
     }
 
     private void toClaimListFragment() {

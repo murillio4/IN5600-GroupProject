@@ -29,5 +29,7 @@
     <string name="photo_dialog_take_photo">From gallery</string>
     <string name="photo_dialog_open_gallery">Take photo</string>
     <string name="photo_dialog_cancel">Cancel</string>
+    <string name="photo_dialog_image_capture_error">Failed to capture image</string>
+    <string name="photo_dialog_gallery_error">Failed to fetch from gallery</string>
 
 </resources>

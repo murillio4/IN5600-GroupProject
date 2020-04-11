@@ -3,6 +3,7 @@ package com.example.groupproject.ui.fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +20,7 @@ import com.example.groupproject.BuildConfig;
 import com.example.groupproject.R;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.util.ImageUtil;
+import com.example.groupproject.ui.result.PhotoResult;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -46,7 +48,7 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
     @Inject
     Context context;
 
-    private String imageFileAbsolutePath = null;
+    private Uri imageUri = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,12 +126,9 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
                 handleImageCaptureActivityResult(data);
             } else if (requestCode == Constants.REQUEST_CODE.GALLERY.ordinal()) {
                 handleGalleryActivityResult(data);
-            } else {
-                // Handle ???
             }
-        } else {
-            // Handle ???
         }
+        dismiss();
     }
 
     private void startImageCaptureActivity() {
@@ -139,20 +138,21 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
             Log.d(TAG, "startImageCaptureActivity: Image Capture");
             try {
                 File imageFile = ImageUtil.Storage.createImageFile(context);
-                imageFileAbsolutePath = null;
+                imageUri = null;
 
                 if (imageFile != null) {
-                    Uri imageUri = FileProvider.getUriForFile(
+                    imageUri = FileProvider.getUriForFile(
                             context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
-                    imageFileAbsolutePath = imageFile.getAbsolutePath();
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, Constants.REQUEST_CODE.CAMERA.ordinal());
                 }
             } catch (IOException e) {
                 Log.e(TAG, "startImageCaptureActivity: Error creating image file", e);
+                dismiss();
             }
         } else {
             Log.d(TAG, "startImageCaptureActivity: No packet manager available");
+            dismiss();
         }
     }
 
@@ -165,15 +165,25 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
     }
 
     private void handleImageCaptureActivityResult(Intent data) {
-        if (imageFileAbsolutePath != null) {
-            Log.d(TAG, "handleImageCaptureActivityResult: Image: " + imageFileAbsolutePath);
+        if (imageUri != null) {
+            Log.d(TAG, "handleImageCaptureActivityResult: Image: " + imageUri);
+            photoViewModel.setPhotoResult(new PhotoResult(imageUri));
+        } else {
+            Log.d(TAG, "handleImageCaptureActivityResult: Image not created");
+            photoViewModel.setPhotoResult(new PhotoResult(R.string.photo_dialog_image_capture_error));
         }
     }
 
     private void handleGalleryActivityResult(Intent data) {
-        Uri imageUri = data.getData();
-        imageFileAbsolutePath = imageUri.getPath(); // NOT CORRECT ?
-        Log.d(TAG, "handleGalleryActivityResult: Image: " + imageFileAbsolutePath);
+        imageUri = data.getData();
+
+        if (imageUri != null) {
+            Log.d(TAG, "handleGalleryActivityResult: Image: " + imageUri);
+            photoViewModel.setPhotoResult(new PhotoResult(imageUri));
+        } else {
+            Log.d(TAG, "handleGalleryActivityResult: Image not created");
+            photoViewModel.setPhotoResult(new PhotoResult(R.string.photo_dialog_gallery_error));
+        }
     }
 
 
