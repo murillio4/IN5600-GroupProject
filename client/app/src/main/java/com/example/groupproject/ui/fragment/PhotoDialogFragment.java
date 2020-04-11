@@ -143,8 +143,7 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             Log.d(TAG, "startImageCaptureActivity: Image Capture");
             try {
-                File imageFile = ImageUtil.createImageFile(
-                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                File imageFile = ImageUtil.Storage.createImageFile(context);
                 imageFileAbsolutePath = null;
 
                 if (imageFile != null) {

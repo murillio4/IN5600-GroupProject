@@ -1,29 +1,51 @@
 package com.example.groupproject.data.util;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
+import android.os.Environment;
+
+import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ImageUtil {
 
-    public static File createImageFile(File storageDir) throws IOException {
-        return File.createTempFile(getImageFileName(), ".jpg", storageDir);
+    private ImageUtil() {}
+
+    public static class Storage {
+
+        private Storage() {}
+
+        public static File createImageFile(@NonNull Context context) throws IOException {
+            return File.createTempFile(
+                    getImageFileName(),
+                    ".jpg",
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            );
+        }
+
+        private static String getTimeStampString() {
+            return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        }
+
+        private static String getImageFileName() {
+            return "JPEG_" + getTimeStampString() + "_";
+        }
+
     }
 
-    private static String getTimeStampString() {
-        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    public static class Compressor {
+
+        private Compressor() {}
+
     }
 
-    private static String getImageFileName() {
-        return "JPEG_" + getTimeStampString() + "_";
+    public static class Converter {
+
+        private Converter() {}
+
     }
+
 }

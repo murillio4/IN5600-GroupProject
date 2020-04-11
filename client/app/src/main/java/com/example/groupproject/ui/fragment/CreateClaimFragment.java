@@ -53,16 +53,11 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
         ///
     }
 
-/*    private void initDescriptionInput(View view) {
-        final EditText editText = view.findViewById(R.id.create_claim_description_input);
-    }*/
-
     private void handleAddMapLocationButton() {
         Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
     }
 
     private void handleAddPhotoButton() {
-        // Toast.makeText(getActivity(), "Add Photo", Toast.LENGTH_SHORT).show();
         FragmentManager fm = getActivity().getSupportFragmentManager();
         new PhotoDialogFragment().showNow(fm);
     }
