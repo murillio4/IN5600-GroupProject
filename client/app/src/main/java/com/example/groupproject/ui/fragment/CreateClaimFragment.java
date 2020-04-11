@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
 
-public class CreateClaimFragment extends DaggerFragment {
+public class CreateClaimFragment extends DaggerFragment implements View.OnClickListener {
 
     private static final String TAG = "CreateClaimFragment";
 
@@ -29,20 +29,16 @@ public class CreateClaimFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_create_claim, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_claim, container, false);
+
+        view.findViewById(R.id.create_claim_add_map_location_button).setOnClickListener(this);
+        view.findViewById(R.id.create_claim_add_photo_button).setOnClickListener(this);
+        view.findViewById(R.id.create_claim_submit_button).setOnClickListener(this);
+
+        return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initDescriptionInput();
-        initAddMapLocationButton();
-        initAddPhotoButton();
-        initSubmitButton();
-    }
-
-    protected void toClaimListFragment() {
+    private void toClaimListFragment() {
         FragmentTransaction fragmentTransaction =
                 getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment_container, new ClaimListFragment());
@@ -57,34 +53,36 @@ public class CreateClaimFragment extends DaggerFragment {
         ///
     }
 
-    protected void initDescriptionInput() {
-        final EditText editText = getView().findViewById(R.id.create_claim_description_input);
+/*    private void initDescriptionInput(View view) {
+        final EditText editText = view.findViewById(R.id.create_claim_description_input);
+    }*/
+
+    private void handleAddMapLocationButton() {
+        Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
     }
 
-    protected void initAddMapLocationButton() {
-        getView().findViewById(R.id.create_claim_add_map_location_button)
-                .setOnClickListener(v -> {
-                    Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
-                    // Do some magic here ...
-                });
+    private void handleAddPhotoButton() {
+        // Toast.makeText(getActivity(), "Add Photo", Toast.LENGTH_SHORT).show();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        new PhotoDialogFragment().showNow(fm);
     }
 
-    protected void initAddPhotoButton() {
-        getView().findViewById(R.id.create_claim_add_photo_button)
-                .setOnClickListener(v -> {
-                    Toast.makeText(getActivity(), "Add Photo", Toast.LENGTH_SHORT).show();
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    new PhotoDialogFragment().showNow(fm);
-                });
+    private void handleSubmitButton() {
+        toClaimListFragment();
     }
 
-    protected void initSubmitButton() {
-        getView().findViewById(R.id.create_claim_submit_button)
-                .setOnClickListener(v -> {
-                    Toast.makeText(getActivity(), "Submit", Toast.LENGTH_SHORT).show();
-                    // Do some magic here ...
-                    toClaimListFragment();
-                });
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.create_claim_add_map_location_button:
+                handleAddMapLocationButton();
+                break;
+            case R.id.create_claim_add_photo_button:
+                handleAddPhotoButton();
+                break;
+            case R.id.create_claim_submit_button:
+                handleSubmitButton();
+                break;
+        }
     }
-
 }
