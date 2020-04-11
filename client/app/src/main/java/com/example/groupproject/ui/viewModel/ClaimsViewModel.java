@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.groupproject.data.Resource;
 import com.example.groupproject.data.Status;
@@ -16,15 +17,14 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.observers.DisposableObserver;
 
-public class ClaimsViewModel extends AndroidViewModel {
+public class ClaimsViewModel extends ViewModel {
 
     private MutableLiveData<Resource<ClaimList>> claimsResult = new MutableLiveData<>();
     // Inject?
     private ClaimsRepository claimsRepository;
 
     @Inject
-    public ClaimsViewModel(@NonNull Application application, ClaimsRepository claimsRepository) {
-        super(application);
+    public ClaimsViewModel(ClaimsRepository claimsRepository) {
         this.claimsRepository = claimsRepository;
     }
 
