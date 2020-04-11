@@ -3,6 +3,7 @@ import com.example.groupproject.ui.fragment.CreateClaimFragment;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DropdownMenuFragment;
+import com.example.groupproject.ui.fragment.LocationPickerDialogFragment;
 import com.example.groupproject.ui.fragment.PhotoDialogFragment;
 
 import dagger.Module;
@@ -25,4 +26,7 @@ public abstract class MainFragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract PhotoDialogFragment contributePhotoDialogFragment();
+
+    @ContributesAndroidInjector
+    abstract LocationPickerDialogFragment contributeLocationPickerDialogFragment();
 }

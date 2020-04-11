@@ -1,13 +1,10 @@
 package com.example.groupproject.ui.fragment;
 
-import androidx.annotation.NonNull;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
@@ -77,6 +74,8 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
 
     private void handleAddMapLocationButton() {
         Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        new LocationPickerDialogFragment().showNow(fm);
     }
 
     private void handleAddPhotoButton() {
