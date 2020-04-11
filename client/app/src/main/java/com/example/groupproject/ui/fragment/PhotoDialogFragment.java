@@ -8,15 +8,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.BuildConfig;
@@ -25,7 +21,6 @@ import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.util.ImageUtil;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.karumi.dexter.Dexter;
-import com.karumi.dexter.DexterBuilder;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
@@ -39,7 +34,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatDialogFragment;
 
-import static android.app.Activity.RESULT_OK;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implements View.OnClickListener {
 

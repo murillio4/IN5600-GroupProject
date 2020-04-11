@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import android.app.Application;
 import android.util.Patterns;
@@ -23,15 +24,14 @@ import java.security.NoSuchAlgorithmException;
 
 import io.reactivex.rxjava3.observers.DisposableObserver;
 
-public class LoginViewModel extends AndroidViewModel {
+public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private SessionRepository sessionRepository;
 
     @Inject
-    public LoginViewModel(Application application, SessionRepository sessionRepository) {
-        super(application);
+    public LoginViewModel(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
     }
 
