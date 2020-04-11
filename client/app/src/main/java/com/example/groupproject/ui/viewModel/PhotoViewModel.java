@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.groupproject.ui.result.PhotoResult;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class PhotoViewModel extends ViewModel {
     private MutableLiveData<PhotoResult> photoResult = new MutableLiveData<>();
 

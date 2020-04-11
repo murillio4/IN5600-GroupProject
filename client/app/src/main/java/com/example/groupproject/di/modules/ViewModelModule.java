@@ -10,6 +10,8 @@ import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
 
+import javax.inject.Singleton;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -40,6 +42,6 @@ public abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PhotoViewModel.class)
-    protected abstract ViewModel PhotoViewModel(PhotoViewModel photoViewModel);
+    protected abstract ViewModel photoViewModel(PhotoViewModel photoViewModel);
 
 }
