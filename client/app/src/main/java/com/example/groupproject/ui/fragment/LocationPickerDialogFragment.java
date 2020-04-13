@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,7 +80,8 @@ import static android.app.Activity.RESULT_OK;
 public class LocationPickerDialogFragment extends DaggerDialogFragment
         implements OnMapReadyCallback, View.OnClickListener,
         MaterialSearchBar.OnSearchActionListener, TextWatcher,
-        SuggestionsAdapter.OnItemViewClickListener {
+        SuggestionsAdapter.OnItemViewClickListener,
+        GoogleMap.OnMapClickListener {
 
     private static final String TAG = "LocationPickerDialogFra";
     private static final int USE_LOCATION_REQUEST = 51;
@@ -120,6 +123,8 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             materialSearchBar.setOnSearchActionListener(this);
             materialSearchBar.addTextChangeListener(this);
             materialSearchBar.setSuggestionsClickListener(this);
+            materialSearchBar.setNavButtonEnabled(true);
+//            materialSearchBar.setNavIconTint(R.drawable.ic_close_black_48dp);
         });
     }
 
@@ -144,6 +149,8 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             }
             return false;
         });
+
+        googleMap.setOnMapClickListener(this);
 
         View mapView = supportMapFragment.getView();
         if (mapView != null && mapView.findViewById(1) != null) {
@@ -180,10 +187,15 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     }
 
     @Override
+    public void onMapClick(LatLng latLng) {
+        setMarker(latLng, latLng.toString());
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.location_picker_dialog_button:
-                Toast.makeText(context, "Location Selected", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "Location Selected", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 dismiss();
@@ -198,12 +210,17 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
 
     @Override
     public void onButtonClicked(int buttonCode) {
+        Log.i(TAG, "onButtonClicked: " + buttonCode);
         switch (buttonCode) {
             case MaterialSearchBar.BUTTON_BACK:
+                materialSearchBar.clearSuggestions();
                 materialSearchBar.closeSearch();
+                Log.i(TAG, "onButtonClicked: BUTTON_BACK");
+                break;
+            case MaterialSearchBar.BUTTON_NAVIGATION:
+                dismiss();
                 break;
             case MaterialSearchBar.BUTTON_SPEECH:
-            case MaterialSearchBar.BUTTON_NAVIGATION:
             default:
                 break;
         }
@@ -254,9 +271,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
         materialSearchBar.setText(suggestion);
 
-        // Look over
-        Handler.createAsync(Looper.getMainLooper())
-                .postDelayed(() -> { materialSearchBar.clearSuggestions(); }, 1000);
+        new Handler().postDelayed(() -> materialSearchBar.clearSuggestions(), 1000);
 
         InputMethodManager inputMethodManager =
                 (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -266,7 +281,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         }
 
         final String placeId = selectedPrediction.getPlaceId();
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
+        List<Place.Field> placeFields = Collections.singletonList(Place.Field.LAT_LNG);
         FetchPlaceRequest fetchPlaceRequest =
                 FetchPlaceRequest.builder(placeId, placeFields).build();
 
@@ -274,8 +289,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             Place place = fetchPlaceResponse.getPlace();
             LatLng latLngPlace = place.getLatLng();
             if (latLngPlace != null) {
-                googleMap.moveCamera(
-                        CameraUpdateFactory.newCameraPosition(buildCameraPosition(latLngPlace)));
+                setMarker(latLngPlace, place.getName());
             }
             Log.i(TAG, "OnItemClickListener: Found place " + place.getName());
 
@@ -369,6 +383,12 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                 Toast.makeText(context, "Unable to fetch last location", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void setMarker(LatLng latLng, String title) {
+        googleMap.clear();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(buildCameraPosition(latLng)));
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
     }
 
     private void initSupportMapFragment() {

@@ -22,7 +22,7 @@
         app:mt_hint="Choose a location"
         app:mt_placeholder="Choose a location"
         app:mt_maxSuggestionsCount="5"
-        app:mt_navIconEnabled="false" />
+        app:mt_navIconEnabled="false"/>
 
     <Button
         android:id="@+id/location_picker_dialog_button"
@@ -33,6 +33,5 @@
         android:textColor="#000"
         android:background="#FFF"
         android:layout_margin="16dp"
-        android:textStyle="bold" />
-
+        android:textStyle="bold"/>
 </RelativeLayout>
