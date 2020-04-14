@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.groupproject.R;
+import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 
 import javax.inject.Inject;
@@ -23,6 +24,9 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
 
     @Inject
     PhotoViewModel photoViewModel;
+
+    @Inject
+    LocationViewModel locationViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +57,21 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
 
             if (photoResult.getError() != null) {
                 Log.d(TAG, "onCreate: PhotoResult: " + photoResult.getError());
+            }
+        });
+
+        locationViewModel.getLocationResult().observe(this, locationResult -> {
+            if (locationResult == null) {
+                Log.d(TAG, "onCreate: No location result");
+                return;
+            }
+
+            if (locationResult.getSuccess() != null) {
+                Log.d(TAG, "onCreate: LocationResult: " + locationResult.getSuccess());
+            }
+
+            if (locationResult.getError() != null) {
+                Log.d(TAG, "onCreate: LocationResult: " + locationResult.getError());
             }
         });
     }

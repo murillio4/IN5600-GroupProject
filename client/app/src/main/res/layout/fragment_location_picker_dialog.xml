@@ -12,26 +12,35 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragment.LocationPickerDialogFragment" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="8dp"/>
+
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/location_picker_dialog_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
+        android:layout_marginVertical="3dp"
+        android:elevation="8dp"
         android:outlineProvider="bounds"
         app:mt_speechMode="false"
         app:mt_hint="Choose a location"
         app:mt_placeholder="Choose a location"
         app:mt_maxSuggestionsCount="5"
-        app:mt_navIconEnabled="false"/>
+        app:mt_navIconDrawable="@drawable/ic_close_white_24dp"
+        app:mt_backIconDrawable="@drawable/ic_arrow_back_white_24dp"
+        app:mt_navIconEnabled="true"
+        style="@style/MaterialSearchBarTheme"/>
 
     <Button
-        android:id="@+id/location_picker_dialog_button"
+        android:id="@+id/location_picker_dialog_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Use Location"
-        android:textColor="#000"
-        android:background="#FFF"
-        android:layout_margin="16dp"
+        android:text="@string/location_picker_dialog_btn"
+        android:background="@color/colorYellow"
+        android:layout_margin="10dp"
         android:textStyle="bold"/>
 </RelativeLayout>

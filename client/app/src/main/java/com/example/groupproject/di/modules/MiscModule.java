@@ -2,6 +2,7 @@ package com.example.groupproject.di.modules;
 
 import android.app.Application;
 import android.content.Context;
+import android.view.LayoutInflater;
 
 import javax.inject.Singleton;
 
@@ -14,5 +15,10 @@ public class MiscModule {
     @Provides
     Context providesContext(Application application) {
         return application.getApplicationContext();
+    }
+
+    @Provides
+    LayoutInflater providesLayoutInflater(Context context) {
+        return LayoutInflater.from(context);
     }
 }

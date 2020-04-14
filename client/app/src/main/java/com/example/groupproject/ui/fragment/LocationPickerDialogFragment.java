@@ -2,14 +2,14 @@ package com.example.groupproject.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,16 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.util.MapUtil;
-import com.google.android.gms.common.api.ApiException;
+import com.example.groupproject.ui.adapter.LocationSuggestionsAdapter;
+import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -38,14 +36,11 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
@@ -53,7 +48,6 @@ import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -65,10 +59,10 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -81,33 +75,53 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         implements OnMapReadyCallback, View.OnClickListener,
         MaterialSearchBar.OnSearchActionListener, TextWatcher,
         SuggestionsAdapter.OnItemViewClickListener,
-        GoogleMap.OnMapClickListener {
+        GoogleMap.OnMapClickListener,
+        GoogleMap.OnMyLocationButtonClickListener {
 
     private static final String TAG = "LocationPickerDialogFra";
     private static final int USE_LOCATION_REQUEST = 51;
     private static final int DEFAULT_BEARING = 0;
     private static final int DEFAULT_ZOOM = 15;
 
-    private FusedLocationProviderClient fusedLocationProviderClient = null;
+
     private List<AutocompletePrediction> predictionList = null;
     private SupportMapFragment supportMapFragment = null;
     private MaterialSearchBar materialSearchBar = null;
-    private LocationCallback locationCallback = null;
-    private Location lastKnownLocation = null;
-    private PlacesClient placesClient = null;
     private GoogleMap googleMap = null;
+    private LatLng marker = null;
 
     @Inject
     Context context;
+    @Inject
+    LocationViewModel locationViewModel;
 
     @Inject
+    Geocoder geocoder;
+    @Inject
     AutocompleteSessionToken autocompleteSessionToken;
+    @Inject
+    LocationSuggestionsAdapter locationSuggestionsAdapter;
+    @Inject
+    PlacesClient placesClient;
+    @Inject
+    FusedLocationProviderClient fusedLocationProviderClient;
+    @Inject
+    LocationRequest locationRequest;
+    @Inject
+    LocationSettingsRequest locationSettingsRequest;
+    @Inject
+    SettingsClient settingsClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_location_picker_dialog, container, false);
-        view.findViewById(R.id.location_picker_dialog_button).setOnClickListener(this);
+        view.findViewById(R.id.location_picker_dialog_btn).setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public int getTheme() {
+        return R.style.FullScreenDialog;
     }
 
     @Override
@@ -115,16 +129,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         super.onViewCreated(view, savedInstanceState);
         requestPermissions(() -> {
             initSupportMapFragment();
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-            Places.initialize(context, getString(R.string.google_maps_api_key));
-            placesClient = Places.createClient(context);
-
-            materialSearchBar = view.findViewById(R.id.location_picker_dialog_search_bar);
-            materialSearchBar.setOnSearchActionListener(this);
-            materialSearchBar.addTextChangeListener(this);
-            materialSearchBar.setSuggestionsClickListener(this);
-            materialSearchBar.setNavButtonEnabled(true);
-//            materialSearchBar.setNavIconTint(R.drawable.ic_close_black_48dp);
+            initMaterialSearchBar();
         });
     }
 
@@ -140,15 +145,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         googleMap = map;
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        googleMap.setOnMyLocationButtonClickListener(() -> {
-            if (materialSearchBar.isSuggestionsVisible()) {
-                materialSearchBar.clearSuggestions();
-            }
-            if (materialSearchBar.isSearchOpened()) {
-                materialSearchBar.closeSearch();
-            }
-            return false;
-        });
+        googleMap.setOnMyLocationButtonClickListener(this);
 
         googleMap.setOnMapClickListener(this);
 
@@ -162,17 +159,8 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             layoutParams.setMargins(0, 0, 40, 180);
         }
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest locationSettingsRequest =
-                new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build();
-        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
         Task<LocationSettingsResponse> task =
                 settingsClient.checkLocationSettings(locationSettingsRequest);
-
         task.addOnSuccessListener(getActivity(), locationSettingsResponse -> getDeviceLocation());
         task.addOnFailureListener(getActivity(), e -> {
            if (e instanceof ResolvableApiException)  {
@@ -187,15 +175,43 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     }
 
     @Override
+    public boolean onMyLocationButtonClick() {
+        if (materialSearchBar.isSuggestionsVisible()) {
+            materialSearchBar.clearSuggestions();
+        }
+        if (materialSearchBar.isSearchOpened()) {
+            materialSearchBar.closeSearch();
+        }
+        return false;
+    }
+
+    @Override
     public void onMapClick(LatLng latLng) {
-        setMarker(latLng, latLng.toString());
+        try {
+            Address address = geocoder.getFromLocation(
+                    latLng.latitude,
+                    latLng.longitude,
+                    1).get(0);
+            String name = address.getAddressLine(0);
+            materialSearchBar.setPlaceHolder(name);
+            setMarker(latLng, name);
+
+        } catch (IOException e) {
+            setMarker(latLng, latLng.toString());
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.location_picker_dialog_button:
-                Toast.makeText(context, "Location Selected", Toast.LENGTH_SHORT).show();
+            case R.id.location_picker_dialog_btn:
+                if (marker != null) {
+                    locationViewModel.setLocationResult(
+                            new com.example.groupproject.ui.result.LocationResult(marker));
+                    dismiss();
+                } else {
+                    Toast.makeText(context, "No location chosen", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 dismiss();
@@ -213,7 +229,6 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         Log.i(TAG, "onButtonClicked: " + buttonCode);
         switch (buttonCode) {
             case MaterialSearchBar.BUTTON_BACK:
-                materialSearchBar.clearSuggestions();
                 materialSearchBar.closeSearch();
                 Log.i(TAG, "onButtonClicked: BUTTON_BACK");
                 break;
@@ -237,6 +252,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                 .setSessionToken(autocompleteSessionToken)
                 .setQuery(s.toString())
                 .build();
+
         placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FindAutocompletePredictionsResponse predictionsResponse =
@@ -290,6 +306,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             LatLng latLngPlace = place.getLatLng();
             if (latLngPlace != null) {
                 setMarker(latLngPlace, place.getName());
+                moveCamera(latLngPlace);
             }
             Log.i(TAG, "OnItemClickListener: Found place " + place.getName());
 
@@ -350,45 +367,54 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     }
 
     private void getDeviceLocation() {
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                lastKnownLocation = task.getResult();
-                if (lastKnownLocation != null) {
-                    googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                            buildCameraPosition(new LatLng(lastKnownLocation.getLatitude(),
-                                    lastKnownLocation.getLongitude()))));
-                } else {
-                    final LocationRequest locationRequest = LocationRequest.create();
-                    locationRequest.setInterval(10000);
-                    locationRequest.setFastestInterval(5000);
-                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                    locationCallback = new LocationCallback() {
-                        @Override
-                        public void onLocationResult(LocationResult locationResult) {
-                            super.onLocationResult(locationResult);
-                            if (locationResult == null) {
-                                return;
-                            }
-                            lastKnownLocation = locationResult.getLastLocation();
-                            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                                    buildCameraPosition(new LatLng(lastKnownLocation.getLatitude(),
-                                            lastKnownLocation.getLongitude()))));
-                            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), location -> {
+                        if (location != null) {
+                            moveCamera(location);
+                        } else {
+                            listenForLocationUpdate();
                         }
-                    };
-                    fusedLocationProviderClient.requestLocationUpdates(
-                            locationRequest, locationCallback, null);
-                }
-            } else {
-                Toast.makeText(context, "Unable to fetch last location", Toast.LENGTH_LONG).show();
-            }
-        });
+                }).addOnFailureListener(getActivity(), e -> {
+                    Toast.makeText(context, "Unable to fetch last location", Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void listenForLocationUpdate() {
+        fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        if (locationResult == null) {
+                            return;
+                        }
+                        moveCamera(locationResult.getLastLocation());
+                        fusedLocationProviderClient.removeLocationUpdates(this);
+                    }
+                }, null);
+    }
+
+    private void moveCamera(LatLng latLng) {
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                buildCameraPosition(latLng)));
+    }
+
+    private void moveCamera(Location location) {
+        moveCamera(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     private void setMarker(LatLng latLng, String title) {
         googleMap.clear();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(buildCameraPosition(latLng)));
         googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
+        marker = latLng;
+    }
+
+    private void initMaterialSearchBar() {
+        materialSearchBar = getView().findViewById(R.id.location_picker_dialog_search_bar);
+        materialSearchBar.setOnSearchActionListener(this);
+        materialSearchBar.addTextChangeListener(this);
+        locationSuggestionsAdapter.setListener(this);
+        materialSearchBar.setCustomSuggestionAdapter(locationSuggestionsAdapter);
     }
 
     private void initSupportMapFragment() {
