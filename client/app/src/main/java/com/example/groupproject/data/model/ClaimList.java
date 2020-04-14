@@ -15,18 +15,26 @@ public class ClaimList extends BaseModel {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("numberOfClaims")
+    private String numberOfClaims;
+
     @SerializedName("claims")
     private List<Claim> claims = new ArrayList<>();
 
     public ClaimList(Claims remoteClaims) {
         this.id = remoteClaims.getId();
-        // Check lengths of lists from remteClaims for proper zip
+        this.numberOfClaims = remoteClaims.getNumberOfClaims();
+
         IntStream.range(0, remoteClaims.getClaimId().size())
-                .forEach(i -> claims.add(new Claim(
-                            remoteClaims.getClaimId().get(i),
-                            remoteClaims.getClaimDes().get(i),
-                            remoteClaims.getClaimPhoto().get(i),
-                            remoteClaims.getClaimLocation().get(i))));
+                .forEach(i -> {
+                    if (!remoteClaims.getClaimId().get(i).equals(Constants.Claim.ITEM_NOT_AVAILABLE)) {
+                        claims.add(new Claim(
+                                remoteClaims.getClaimId().get(i),
+                                remoteClaims.getClaimDes().get(i),
+                                remoteClaims.getClaimPhoto().get(i),
+                                remoteClaims.getClaimLocation().get(i)));
+                    }
+                });
     }
 
     public String getKey() {

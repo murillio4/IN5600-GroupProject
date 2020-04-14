@@ -26,6 +26,10 @@ public interface Constants {
         String Claim = "CLAIM";
     }
 
+    interface Claim {
+        String ITEM_NOT_AVAILABLE = "na";
+    }
+
     enum REQUEST_CODE {
         CAMERA,
         GALLERY
