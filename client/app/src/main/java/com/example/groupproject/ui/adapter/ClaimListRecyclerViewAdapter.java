@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,9 +19,7 @@ import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimListRecyclerViewAdapter.ClaimListItemViewHolder>{
+public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimListItemViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
 
@@ -38,44 +34,17 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
     @NonNull
     @Override
     public ClaimListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                                    .inflate(R.layout.layout_claim_list_item, parent, false);
-        ClaimListItemViewHolder claimListItemViewHolder = new ClaimListItemViewHolder(view);
-        return claimListItemViewHolder;
+        return new ClaimListItemViewHolder(LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.layout_claim_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ClaimListItemViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder");
-
         Claim claim = claimList.getClaims().get(position);
 
-        Glide.with(context)
-                .asBitmap()
-                .load(claim.getPhotoPath())
-                .error(R.drawable.ic_error_red_24dp)
-                .into(holder.claimListItemImage);
-
-        holder.claimListItemText.setText(claim.getId());
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Clicked on: " + claim.getId());
-                Toast.makeText(context, "Clicked on: " + claim.getId(), Toast.LENGTH_LONG).show();
-
-                Bundle extras = new Bundle();
-                extras.putSerializable(Constants.Serializable.Claim, claim);
-
-                DisplayClaimFragment displayClaimFragment = new DisplayClaimFragment();
-                displayClaimFragment.setArguments(extras);
-
-                FragmentTransaction fragmentTransaction =
-                        context.getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_fragment_container, displayClaimFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
+        holder.setListItemImage(context, claim.getPhotoPath())
+                .setListItemText(claim.getId())
+                .setParentLayoutOnClickListner(v -> startDisplayClaimFragment(claim));
     }
 
     @Override
@@ -83,16 +52,24 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
         return claimList.getClaims().size();
     }
 
-    public class ClaimListItemViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView claimListItemImage;
-        TextView claimListItemText;
-        RelativeLayout parentLayout;
+    private void startDisplayClaimFragment(Claim claim) {
+        context.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container,
+                        createDisplayClaimFragment(createBundleFromClaim(claim)))
+                .addToBackStack(null)
+                .commit();
+    }
 
-        public ClaimListItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.claimListItemImage = itemView.findViewById(R.id.claim_list_item_image);
-            this.claimListItemText = itemView.findViewById(R.id.claim_list_item_text);
-            this.parentLayout = itemView.findViewById(R.id.claim_list_item);
-        }
+    private Bundle createBundleFromClaim(Claim claim) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.Serializable.Claim, claim);
+        return bundle;
+    }
+
+    private DisplayClaimFragment createDisplayClaimFragment(Bundle extras) {
+        DisplayClaimFragment displayClaimFragment = new DisplayClaimFragment();
+        displayClaimFragment.setArguments(extras);
+        return displayClaimFragment;
     }
 }

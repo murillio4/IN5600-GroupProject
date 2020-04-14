@@ -1,5 +1,6 @@
 package com.example.groupproject.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,13 +17,12 @@ import com.example.groupproject.data.model.Person;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
 
-public class ClaimListFragment extends DaggerFragment {
+public class ClaimListFragment extends DaggerFragment implements View.OnClickListener {
 
     private static final String TAG = "ClaimListFragment";
 
@@ -33,45 +32,53 @@ public class ClaimListFragment extends DaggerFragment {
     @Inject
     LoginViewModel loginViewModel;
 
+    @Inject
+    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_claim_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_claim_list, container, false);
+        view.findViewById(R.id.create_new_claim_fab).setOnClickListener(this);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initCreateNewClaimFloatingActionButton();
-
         Person loggedInPerson = loginViewModel.getLoggedInPerson();
         if (loggedInPerson != null) {
             fetchClaimsForPersonWithId(loggedInPerson.getId());
+        } else {
+            Toast.makeText(context, "Unable to get logged in user", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void initCreateNewClaimFloatingActionButton() {
-        FloatingActionButton floatingActionButton =
-                getView().findViewById(R.id.create_new_claim_fab);
-        floatingActionButton.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Create new claim", Toast.LENGTH_LONG).show();
-            // Make this cleaner!
-            FragmentTransaction fragmentTransaction =
-                    getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_fragment_container, new CreateClaimFragment());
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        });
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.create_new_claim_fab:
+                startCreateClaimFragment();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void startCreateClaimFragment() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, new CreateClaimFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     private void initClaimListRecyclerView(ClaimList claimList) {
         RecyclerView recyclerView = getView().findViewById(R.id.recycler_view);
-        ClaimListRecyclerViewAdapter claimListRecyclerViewAdapter =
-                new ClaimListRecyclerViewAdapter(getActivity(), claimList);
-        recyclerView.setAdapter(claimListRecyclerViewAdapter);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(new ClaimListRecyclerViewAdapter(getActivity(), claimList));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
     }
 
     private void fetchClaimsForPersonWithId(String id) {
@@ -93,4 +100,5 @@ public class ClaimListFragment extends DaggerFragment {
             }
         });
     }
+
 }

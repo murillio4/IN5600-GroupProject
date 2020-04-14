@@ -4,13 +4,18 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -18,9 +23,13 @@ import java.util.Date;
 
 public class ImageUtil {
 
+    private static final String TAG = "ImageUtil";
+
     private ImageUtil() {}
 
     public static class Storage {
+
+        private static final String TAG = "ImageUtil.Storage";
 
         private Storage() {}
 
@@ -78,6 +87,37 @@ public class ImageUtil {
                     ".jpg",
                     context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             );
+        }
+        
+        public static boolean fileExists(@NonNull Context context, Uri uri) {
+            ParcelFileDescriptor parcelFileDescriptor = null;
+            boolean fileExists = true;
+
+            try {
+                parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "fileExists: Unable to locate file " + uri);
+                fileExists = false;
+            } finally {
+                if (parcelFileDescriptor != null) {
+                    try {
+                        parcelFileDescriptor.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return fileExists;
+        }
+
+        public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) throws IOException {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    context.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
+            return bitmap;
         }
 
         private static ContentValues createContentValues(@NonNull String displayName,
