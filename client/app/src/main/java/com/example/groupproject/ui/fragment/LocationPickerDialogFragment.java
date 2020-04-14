@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
@@ -30,7 +31,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
@@ -42,7 +42,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -62,7 +61,6 @@ import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -88,7 +86,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     private SupportMapFragment supportMapFragment = null;
     private MaterialSearchBar materialSearchBar = null;
     private GoogleMap googleMap = null;
-    private LatLng marker = null;
+    private LatLng marker;
 
     @Inject
     Context context;
@@ -111,6 +109,11 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     LocationSettingsRequest locationSettingsRequest;
     @Inject
     SettingsClient settingsClient;
+
+    public LocationPickerDialogFragment(@Nullable LatLng marker) {
+        super();
+        this.marker = marker;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,6 +175,17 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                }
            }
         });
+
+        if (marker != null) {
+            try {
+                String address = getAddressFromLatLang(marker);
+                materialSearchBar.setPlaceHolder(address);
+                setMarker(marker, address);
+            } catch (IOException e) {
+                setMarker(marker, marker.toString());
+            }
+
+        }
     }
 
     @Override
@@ -188,17 +202,13 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     @Override
     public void onMapClick(LatLng latLng) {
         try {
-            Address address = geocoder.getFromLocation(
-                    latLng.latitude,
-                    latLng.longitude,
-                    1).get(0);
-            String name = address.getAddressLine(0);
-            materialSearchBar.setPlaceHolder(name);
-            setMarker(latLng, name);
-
+            String address = getAddressFromLatLang(latLng);
+            materialSearchBar.setPlaceHolder(address);
+            setMarker(latLng, address);
         } catch (IOException e) {
             setMarker(latLng, latLng.toString());
         }
+        marker = latLng;
     }
 
     @Override
@@ -212,6 +222,10 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                 } else {
                     Toast.makeText(context, "No location chosen", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.mt_clear:
+                materialSearchBar.onClick(v);
+                materialSearchBar.clearSuggestions();
                 break;
             default:
                 dismiss();
@@ -307,6 +321,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             if (latLngPlace != null) {
                 setMarker(latLngPlace, place.getName());
                 moveCamera(latLngPlace);
+                marker = latLngPlace;
             }
             Log.i(TAG, "OnItemClickListener: Found place " + place.getName());
 
@@ -406,7 +421,6 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     private void setMarker(LatLng latLng, String title) {
         googleMap.clear();
         googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
-        marker = latLng;
     }
 
     private void initMaterialSearchBar() {
@@ -415,6 +429,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         materialSearchBar.addTextChangeListener(this);
         locationSuggestionsAdapter.setListener(this);
         materialSearchBar.setCustomSuggestionAdapter(locationSuggestionsAdapter);
+        materialSearchBar.findViewById(R.id.mt_clear).setOnClickListener(this);
     }
 
     private void initSupportMapFragment() {
@@ -430,5 +445,13 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
             getActivity().getSupportFragmentManager()
                     .beginTransaction().remove(supportMapFragment).commit();
         }
+    }
+
+    private String getAddressFromLatLang(LatLng latLng) throws IOException {
+        Address address = geocoder.getFromLocation(
+                latLng.latitude,
+                latLng.longitude,
+                1).get(0);
+        return address.getAddressLine(0);
     }
 }

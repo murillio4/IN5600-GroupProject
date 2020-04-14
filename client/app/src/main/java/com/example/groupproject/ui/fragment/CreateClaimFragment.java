@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.groupproject.R;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
+import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;
 
@@ -21,6 +22,8 @@ import dagger.android.support.DaggerFragment;
 public class CreateClaimFragment extends DaggerFragment implements View.OnClickListener {
 
     private static final String TAG = "CreateClaimFragment";
+
+    private LatLng location = null;
 
     @Inject
     PhotoViewModel photoViewModel;
@@ -67,6 +70,7 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
             }
 
             if (locationResult.getSuccess() != null) {
+                location = locationResult.getSuccess();
                 Log.d(TAG, "onCreate: LocationResult: " + locationResult.getSuccess());
             }
 
@@ -94,7 +98,7 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
     private void handleAddMapLocationButton() {
         Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        new LocationPickerDialogFragment().showNow(fm);
+        new LocationPickerDialogFragment(location).showNow(fm);
     }
 
     private void handleAddPhotoButton() {
