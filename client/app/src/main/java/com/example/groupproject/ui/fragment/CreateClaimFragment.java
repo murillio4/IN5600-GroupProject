@@ -80,6 +80,13 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        photoViewModel.getPhotoResult().removeObservers(this);
+        locationViewModel.getLocationResult().removeObservers(this);
+    }
+
     private void toClaimListFragment() {
         FragmentTransaction fragmentTransaction =
                 getActivity().getSupportFragmentManager().beginTransaction();

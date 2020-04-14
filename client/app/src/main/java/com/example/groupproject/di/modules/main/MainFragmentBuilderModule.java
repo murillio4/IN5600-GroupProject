@@ -1,10 +1,11 @@
 package com.example.groupproject.di.modules.main;
+import com.example.groupproject.di.modules.claim.ClaimFragmentBuilderModule;
+import com.example.groupproject.di.modules.claim.ClaimLocationModule;
+import com.example.groupproject.di.modules.claim.ClaimViewModelModule;
 import com.example.groupproject.ui.fragment.CreateClaimFragment;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DropdownMenuFragment;
-import com.example.groupproject.ui.fragment.LocationPickerDialogFragment;
-import com.example.groupproject.ui.fragment.PhotoDialogFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -18,15 +19,17 @@ public abstract class MainFragmentBuilderModule {
     @ContributesAndroidInjector
     abstract ClaimListFragment contributeClaimListFragment();
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = {
+            ClaimLocationModule.class,
+            ClaimViewModelModule.class,
+            ClaimFragmentBuilderModule.class
+    })
     abstract DisplayClaimFragment contributeDisplayClaimFragment();
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = {
+            ClaimLocationModule.class,
+            ClaimViewModelModule.class,
+            ClaimFragmentBuilderModule.class
+    })
     abstract CreateClaimFragment contributeCreateClaimFragment();
-
-    @ContributesAndroidInjector
-    abstract PhotoDialogFragment contributePhotoDialogFragment();
-
-    @ContributesAndroidInjector
-    abstract LocationPickerDialogFragment contributeLocationPickerDialogFragment();
 }

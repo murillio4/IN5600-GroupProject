@@ -49,6 +49,4 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PhotoViewModel.class)
     protected abstract ViewModel locationViewModel(LocationViewModel locationViewModel);
-
-
 }

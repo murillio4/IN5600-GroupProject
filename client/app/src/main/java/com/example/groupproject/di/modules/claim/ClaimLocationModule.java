@@ -1,4 +1,4 @@
-package com.example.groupproject.di.modules.main;
+package com.example.groupproject.di.modules.claim;
 
 import android.content.Context;
 import android.location.Geocoder;
@@ -20,7 +20,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class MainLocationModule {
+public class ClaimLocationModule {
 
     @Provides
     FusedLocationProviderClient providesFusedLocationProviderClient(Context context) {
