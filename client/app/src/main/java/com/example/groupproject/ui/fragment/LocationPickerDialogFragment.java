@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
 import com.example.groupproject.ui.adapter.LocationSuggestionsAdapter;
+import com.example.groupproject.ui.result.Result;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -138,6 +139,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy");
         super.onDestroy();
         removeSupportMapFragment();
     }
@@ -216,8 +218,8 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         switch (v.getId()) {
             case R.id.location_picker_dialog_btn:
                 if (marker != null) {
-                    locationViewModel.setLocationResult(
-                            new com.example.groupproject.ui.result.LocationResult(marker));
+                    Log.i(TAG, "onClick:");
+                    locationViewModel.setLocationResult(Result.success(marker));
                     dismiss();
                 } else {
                     Toast.makeText(context, "No location chosen", Toast.LENGTH_SHORT).show();

@@ -11,6 +11,8 @@ import com.example.groupproject.di.modules.SourceModule;
 import com.example.groupproject.di.modules.ViewModelModule;
 import com.example.groupproject.ui.factory.ViewModelFactory;
 
+import java.lang.annotation.Retention;
+
 import javax.inject.Singleton;
 
 import dagger.BindsInstance;
@@ -32,7 +34,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
     }
 )
 public interface AppComponent extends AndroidInjector<AppController> {
-
     @Component.Builder
     interface Builder {
 

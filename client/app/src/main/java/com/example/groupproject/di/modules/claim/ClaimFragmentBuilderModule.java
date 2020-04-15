@@ -8,6 +8,7 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ClaimFragmentBuilderModule {
+
     @ContributesAndroidInjector
     abstract PhotoDialogFragment contributePhotoDialogFragment();
 

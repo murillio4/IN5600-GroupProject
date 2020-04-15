@@ -3,10 +3,8 @@ package com.example.groupproject.ui.fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +18,7 @@ import com.example.groupproject.BuildConfig;
 import com.example.groupproject.R;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.util.ImageUtil;
-import com.example.groupproject.ui.result.PhotoResult;
+import com.example.groupproject.ui.result.Result;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -167,10 +165,10 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
     private void handleImageCaptureActivityResult(Intent data) {
         if (imageUri != null) {
             Log.d(TAG, "handleImageCaptureActivityResult: Image: " + imageUri);
-            photoViewModel.setPhotoResult(new PhotoResult(imageUri));
+            photoViewModel.setPhotoResult(Result.success(imageUri));
         } else {
             Log.d(TAG, "handleImageCaptureActivityResult: Image not created");
-            photoViewModel.setPhotoResult(new PhotoResult(R.string.photo_dialog_image_capture_error));
+            photoViewModel.setPhotoResult(Result.error(R.string.photo_dialog_image_capture_error));
         }
     }
 
@@ -179,10 +177,10 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
 
         if (imageUri != null) {
             Log.d(TAG, "handleGalleryActivityResult: Image: " + imageUri);
-            photoViewModel.setPhotoResult(new PhotoResult(imageUri));
+            photoViewModel.setPhotoResult(Result.success(imageUri));
         } else {
             Log.d(TAG, "handleGalleryActivityResult: Image not created");
-            photoViewModel.setPhotoResult(new PhotoResult(R.string.photo_dialog_gallery_error));
+            photoViewModel.setPhotoResult(Result.error(R.string.photo_dialog_gallery_error));
         }
     }
 
