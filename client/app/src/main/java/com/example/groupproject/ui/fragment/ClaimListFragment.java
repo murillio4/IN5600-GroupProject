@@ -39,7 +39,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_claim_list, container, false);
-        view.findViewById(R.id.create_new_claim_fab).setOnClickListener(this);
+        view.findViewById(R.id.claim_list_create_claim_new_button).setOnClickListener(this);
         return view;
     }
 
@@ -58,7 +58,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_new_claim_fab:
+            case R.id.claim_list_create_claim_new_button:
                 startCreateClaimFragment();
                 break;
             default:
