@@ -20,6 +20,7 @@ public abstract class SessionActivity extends DaggerAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (sessionViewModel.getSession() == null) {
             Log.i(TAG, "onCreate: No user");
             startLoginActivity();

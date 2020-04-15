@@ -15,7 +15,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/primaryColor"
         android:elevation="8dp"/>
 
     <com.mancj.materialsearchbar.MaterialSearchBar
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="@string/location_picker_dialog_btn"
-        android:background="@color/colorYellow"
+        android:background="@color/secondaryColor"
         android:layout_margin="10dp"
-        android:textStyle="bold"/>
+        style="@style/Widget.MyTheme.YellowButton"/>
 </RelativeLayout>

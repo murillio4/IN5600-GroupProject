@@ -22,44 +22,16 @@ import com.example.groupproject.ui.fragment.DropdownMenuFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends SessionActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        super.onCreate(savedInstanceState);
 
-        initToolbar();
         initClaimListFragment();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.options_menu:
-                openDropdownMenu();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void openDropdownMenu() {
-        FragmentManager fm = getSupportFragmentManager();
-        new DropdownMenuFragment().showNow(fm);
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
     private void initClaimListFragment() {

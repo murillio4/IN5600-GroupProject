@@ -13,11 +13,11 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:id="@+id/location_suggestion_text"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/white_50" />
 
     <ImageView
         android:id="@+id/location_suggestion_delete_btn"
-        android:tint="@color/colorWhite"
+        android:tint="@color/white_50"
         android:src="@drawable/ic_close_white_24dp"
         android:padding="13dp"
         android:layout_width="50dp"

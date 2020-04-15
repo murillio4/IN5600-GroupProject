@@ -17,23 +17,21 @@
         android:id="@+id/photo_dialog_photo_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorYellow"
-        android:text="@string/photo_dialog_open_gallery" />
+        android:text="@string/photo_dialog_open_gallery"
+        style="@style/Widget.MyTheme.YellowButton"/>
 
     <Button
         android:id="@+id/photo_dialog_gallery_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorYellow"
         android:layout_marginVertical="@dimen/fab_margin"
-        android:text="@string/photo_dialog_take_photo" />
+        android:text="@string/photo_dialog_take_photo"
+        style="@style/Widget.MyTheme.YellowButton"/>
 
     <Button
         android:id="@+id/photo_dialog_cancel_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorGrayBlack"
-        android:textColor="@color/colorWhite"
         android:text="@string/photo_dialog_cancel" />
 
 </LinearLayout>

@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorGrayBlack"
+    android:background="@color/primaryDarkColor"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -21,22 +21,23 @@
 
     </RelativeLayout>
 
-        <TextView
-            android:id="@+id/signed_in_user_name"
-            android:textColor="@color/colorWhite"
-            android:gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:textAlignment="center"/>
+    <TextView
+        android:id="@+id/signed_in_user_name"
+        android:textColor="@color/white_50"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:textAlignment="center"/>
 
-        <Button
-            android:id="@+id/sign_out"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            android:text="@string/action_sign_out"
-            android:textSize="17sp"
-            style="@style/FlatButton"/>
+    <TextView
+        android:clickable="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:id="@+id/sign_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white_50"
+        android:textAlignment="center"
+        android:text="@string/action_sign_out"
+        android:textSize="17sp"/>
 </LinearLayout>

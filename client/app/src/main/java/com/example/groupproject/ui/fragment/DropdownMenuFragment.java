@@ -50,8 +50,8 @@ public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implemen
         ImageView close = view.findViewById(R.id.close_dropdown_menu);
         close.setOnClickListener(this);
 
-        Button signOut = view.findViewById(R.id.sign_out);
-        signOut.setOnClickListener(this);
+        /*Button signOut = view.findViewById(R.id.sign_out);
+        signOut.setOnClickListener(this);*/
 
         return view;
     }
@@ -66,10 +66,10 @@ public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implemen
             case R.id.close_dropdown_menu:
                 dismiss();
                 break;
-            case R.id.sign_out:
+            /*case R.id.sign_out:
                 sessionViewModel.removeSession();
                 dismiss();
-                break;
+                break;*/
             default:
                 break;
         }
