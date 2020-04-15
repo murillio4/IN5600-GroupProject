@@ -16,6 +16,8 @@
 
     <string name="title_main_activity">ASS Insurance</string>
 
+    <!--Claim List-->
+    <string name="claim_list_title">Your Claims</string>
 
     <!--Create/Update Claim-->
     <string name="create_claim_title">Create claim</string>
