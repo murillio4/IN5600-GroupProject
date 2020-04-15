@@ -8,6 +8,8 @@ import com.example.groupproject.ui.factory.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 
+import javax.inject.Singleton;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -20,11 +22,13 @@ public abstract class ClaimViewModelModule {
 
     @Binds
     @IntoMap
+    @Singleton
     @ViewModelKey(PhotoViewModel.class)
     protected abstract ViewModel photoViewModel(PhotoViewModel photoViewModel);
 
     @Binds
     @IntoMap
+    @Singleton
     @ViewModelKey(LocationViewModel.class)
     protected abstract ViewModel locationViewModel(LocationViewModel locationViewModel);
 }

@@ -70,7 +70,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_fragment_container, new CreateClaimFragment())
-                .addToBackStack(null)
+                .addToBackStack(TAG)
                 .commit();
     }
 

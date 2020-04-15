@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.Locale;
@@ -21,6 +22,11 @@ import dagger.Provides;
 
 @Module
 public class ClaimLocationModule {
+
+    @Provides
+    AutocompleteSessionToken provideAutocompleteSessionToken() {
+        return AutocompleteSessionToken.newInstance();
+    }
 
     @Provides
     FusedLocationProviderClient providesFusedLocationProviderClient(Context context) {

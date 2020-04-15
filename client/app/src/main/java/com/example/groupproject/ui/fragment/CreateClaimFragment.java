@@ -1,5 +1,6 @@
 package com.example.groupproject.ui.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.groupproject.R;
+import com.example.groupproject.ui.result.Result;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,49 +51,41 @@ public class CreateClaimFragment extends DaggerFragment implements View.OnClickL
         Log.d(TAG, "onCreate: Here?");
 
         photoViewModel.getPhotoResult().observe(this, photoResult -> {
-            if (photoResult == null) {
-                Log.d(TAG, "onCreate: No photo result");
+            if (photoResult.getHasBeenHandled()) {
                 return;
             }
 
-            if (photoResult.getSuccess() != null) {
-                Log.d(TAG, "onCreate: PhotoResult: " + photoResult.getSuccess());
+            Result<Uri> result = photoResult.getContentIfNotHandled();
+
+            if (result.getSuccess() != null) {
+                Log.d(TAG, "onCreate: PhotoResult: " + result.getSuccess());
             }
 
-            if (photoResult.getError() != null) {
-                Log.d(TAG, "onCreate: PhotoResult: " + photoResult.getError());
+            if (result.getError() != null) {
+                Log.d(TAG, "onCreate: PhotoResult: " + result.getError());
             }
         });
 
         locationViewModel.getLocationResult().observe(this, locationResult -> {
-            if (locationResult == null) {
-                Log.d(TAG, "onCreate: No location result");
+            if (locationResult.getHasBeenHandled()) {
                 return;
             }
 
-            if (locationResult.getSuccess() != null) {
-                location = locationResult.getSuccess();
-                Log.d(TAG, "onCreate: LocationResult: " + locationResult.getSuccess());
+            Result<LatLng> result = locationResult.getContentIfNotHandled();
+
+            if (result.getSuccess() != null) {
+                location = result.getSuccess();
+                Log.d(TAG, "onCreate: LocationResult: " + result.getSuccess());
             }
 
-            if (locationResult.getError() != null) {
-                Log.d(TAG, "onCreate: LocationResult: " + locationResult.getError());
+            if (result.getError() != null) {
+                Log.d(TAG, "onCreate: LocationResult: " + result.getError());
             }
         });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        photoViewModel.getPhotoResult().removeObservers(this);
-        locationViewModel.getLocationResult().removeObservers(this);
-    }
-
     private void toClaimListFragment() {
-        FragmentTransaction fragmentTransaction =
-                getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment_container, new ClaimListFragment());
-        fragmentTransaction.commit();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     protected void showClaimSuccess() {

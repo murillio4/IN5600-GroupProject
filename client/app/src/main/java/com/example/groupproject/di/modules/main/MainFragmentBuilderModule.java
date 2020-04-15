@@ -10,7 +10,11 @@ import com.example.groupproject.ui.fragment.DropdownMenuFragment;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
-@Module
+@Module(includes = {
+        ClaimLocationModule.class,
+        ClaimViewModelModule.class,
+        ClaimFragmentBuilderModule.class
+})
 public abstract class MainFragmentBuilderModule {
 
     @ContributesAndroidInjector
@@ -19,17 +23,9 @@ public abstract class MainFragmentBuilderModule {
     @ContributesAndroidInjector
     abstract ClaimListFragment contributeClaimListFragment();
 
-    @ContributesAndroidInjector(modules = {
-            ClaimLocationModule.class,
-            ClaimViewModelModule.class,
-            ClaimFragmentBuilderModule.class
-    })
+    @ContributesAndroidInjector
     abstract DisplayClaimFragment contributeDisplayClaimFragment();
 
-    @ContributesAndroidInjector(modules = {
-            ClaimLocationModule.class,
-            ClaimViewModelModule.class,
-            ClaimFragmentBuilderModule.class
-    })
+    @ContributesAndroidInjector
     abstract CreateClaimFragment contributeCreateClaimFragment();
 }
