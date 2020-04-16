@@ -4,38 +4,89 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.groupproject.data.Constants;
-import com.example.groupproject.data.model.BaseModel;
+import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.data.model.Claims;
 import com.google.gson.Gson;
 
-public class ClaimsLocalDataSource extends BaseLocalDataSource {
+public class ClaimsLocalDataSource {
 
-    ClaimList claimList;
+    private Gson gson;
+    private SharedPreferences sharedPreferences;
 
     public ClaimsLocalDataSource(Context context, Gson gson) {
-        super(context, gson, Constants.SharedPreferences.Name.ClaimList);
-
-        String claimsString = sharedPreferences.getString(
-                Constants.SharedPreferences.Keys.ClaimList, null);
-        claimList = claimsString == null
-                ? null
-                : gson.fromJson(claimsString, ClaimList.class);
+        this.gson = gson;
+        this.sharedPreferences = context.getSharedPreferences(
+                Constants.SharedPreferences.Name.ClaimList, Context.MODE_PRIVATE);
     }
 
-    public <T extends BaseModel> void setData(T data) {
-        this.claimList = (ClaimList)data;
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.SharedPreferences.Keys.ClaimList, new Gson().toJson(data));
-        editor.apply();
+    public void setClaimList(ClaimList claimList) {
+        sharedPreferences.edit()
+                .putString(Constants.SharedPreferences.Keys.ClaimList, gson.toJson(claimList))
+                .apply();
     }
 
-    public <T extends BaseModel> T getData() {
-        return (T)claimList;
+    public ClaimList getClaimList() {
+        return getClaimListFromSharedPreferences();
     }
 
-    public <T extends BaseModel> void removeData(T data) {
+    public void removeClaimList() {
         sharedPreferences.edit().clear().apply();
     }
+
+    public void addClaim(Claim claim) {
+        ClaimList claimList = getClaimListFromSharedPreferences();
+
+        if (claimList == null) {
+            return;
+        }
+
+        if (!claimList.addClaim(claim)) {
+            return;
+        }
+
+        setClaimList(claimList);
+    }
+
+    public void setClaim(Claim claim) {
+        ClaimList claimList = getClaimListFromSharedPreferences();
+
+        if (claimList == null) {
+            return;
+        }
+
+        if (!claimList.setClaim(claim)) {
+            return;
+        }
+
+        setClaimList(claimList);
+    }
+
+    public Claim getClaim(String id) {
+        ClaimList claimList = getClaimListFromSharedPreferences();
+
+        if (claimList == null) {
+            return null;
+        }
+
+        return claimList.getClaim(id);
+    }
+
+    public String getNextClaimId() {
+        ClaimList claimList = getClaimListFromSharedPreferences();
+
+        if (claimList == null) {
+            return null;
+        }
+
+        return claimList.getNextClaimId();
+    }
+
+    private String getClaimListStringFromSharedPreferences() {
+        return sharedPreferences.getString(Constants.SharedPreferences.Keys.ClaimList, null);
+    }
+
+    private ClaimList getClaimListFromSharedPreferences() {
+        return gson.fromJson(getClaimListStringFromSharedPreferences(), ClaimList.class);
+    }
+
 }

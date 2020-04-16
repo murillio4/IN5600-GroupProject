@@ -3,6 +3,7 @@ package com.example.groupproject.data.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 public class Claim implements Serializable {
 
@@ -39,5 +40,10 @@ public class Claim implements Serializable {
 
     public String getLocation() {
         return location;
+    }
+
+    public String toString() {
+        return String.format(
+                Locale.getDefault(), "Claim(%s,%s,%s,%s)", id, description, photoPath, location);
     }
 }

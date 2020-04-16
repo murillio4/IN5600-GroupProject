@@ -14,8 +14,8 @@ public interface Constants {
     }
 
     interface Api {
-        //String Base = "http://192.168.0.145:8080/";
-        String Base = "http://10.0.2.2:8080/";
+        String Base = "http://192.168.0.145:8080/";
+        //String Base = "http://10.0.2.2:8080/";
         String SignIn = "methodPostRemoteLogin";
         String GetClaims = "getMethodMyClaims";
         String InsertClaim = "postInsertNewClaim";
@@ -28,6 +28,7 @@ public interface Constants {
 
     interface Claim {
         String ITEM_NOT_AVAILABLE = "na";
+        int CLAIM_MAX_COUNT = 5;
     }
 
     enum REQUEST_CODE {

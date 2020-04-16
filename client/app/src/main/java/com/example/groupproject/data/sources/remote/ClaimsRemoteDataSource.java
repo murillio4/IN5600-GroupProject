@@ -24,4 +24,28 @@ public class ClaimsRemoteDataSource extends BaseRemoteSource {
                 .build()
                 .enqueue();
     }
+
+    public Observable<Optional<String>> createClaim(
+            String userId, String claimId, String description, String photoPath, String location) {
+        return volleyRequest.post(Constants.Api.InsertClaim, String.class)
+                .addQueryParam("userId", userId)
+                .addQueryParam("indexUpdateClaim", claimId)
+                .addQueryParam("newClaimDes", description)
+                .addQueryParam("newClaimPho", photoPath)
+                .addQueryParam("newClaimLoc", location)
+                .build()
+                .enqueue();
+    }
+
+    public Observable<Optional<String>> updateClaim(
+            String userId, String claimId, String description, String photoPath, String location) {
+        return volleyRequest.post(Constants.Api.InsertClaim, String.class)
+                .addQueryParam("userId", userId)
+                .addQueryParam("indexUpdateClaim", claimId)
+                .addQueryParam("updateClaimDes", description)
+                .addQueryParam("updateClaimPho", photoPath)
+                .addQueryParam("updateClaimLoc", location)
+                .build()
+                .enqueue();
+    }
 }

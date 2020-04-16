@@ -27,7 +27,7 @@ public class SessionLocalDataSource {
         this.user = user;
 
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString(Constants.SharedPreferences.Keys.Person, new Gson().toJson(user));
+        editor.putString(Constants.SharedPreferences.Keys.Person, gson.toJson(user));
         editor.apply();
     }
 

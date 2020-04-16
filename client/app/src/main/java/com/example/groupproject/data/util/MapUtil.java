@@ -2,6 +2,8 @@ package com.example.groupproject.data.util;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Locale;
+
 public class MapUtil {
 
     private MapUtil() {}
@@ -24,6 +26,10 @@ public class MapUtil {
                 e.printStackTrace();
                 return new LatLng(0.0, 0.0);
             }
+        }
+
+        public static String latLngToLocationString(LatLng latLng) {
+            return String.format(Locale.getDefault(), "%f:%f", latLng.latitude, latLng.longitude);
         }
     }
 }

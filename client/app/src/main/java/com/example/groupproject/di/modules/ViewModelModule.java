@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.groupproject.di.ViewModelKey;
 import com.example.groupproject.ui.factory.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
+import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
@@ -49,4 +50,9 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PhotoViewModel.class)
     protected abstract ViewModel locationViewModel(LocationViewModel locationViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormViewModel.class)
+    protected abstract ViewModel formViewModel(FormViewModel formViewModel);
 }

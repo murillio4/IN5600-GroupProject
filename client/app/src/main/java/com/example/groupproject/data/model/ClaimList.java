@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 /**
@@ -16,25 +17,15 @@ public class ClaimList extends BaseModel {
     private String id;
 
     @SerializedName("numberOfClaims")
-    private String numberOfClaims;
+    private int numberOfClaims;
 
     @SerializedName("claims")
     private List<Claim> claims = new ArrayList<>();
 
-    public ClaimList(Claims remoteClaims) {
-        this.id = remoteClaims.getId();
-        this.numberOfClaims = remoteClaims.getNumberOfClaims();
-
-        IntStream.range(0, remoteClaims.getClaimId().size())
-                .forEach(i -> {
-                    if (!remoteClaims.getClaimId().get(i).equals(Constants.Claim.ITEM_NOT_AVAILABLE)) {
-                        claims.add(new Claim(
-                                remoteClaims.getClaimId().get(i),
-                                remoteClaims.getClaimDes().get(i),
-                                remoteClaims.getClaimPhoto().get(i),
-                                remoteClaims.getClaimLocation().get(i)));
-                    }
-                });
+    public ClaimList(String id, int numberOfClaims, List<Claim> claims) {
+        this.id = id;
+        this.numberOfClaims = numberOfClaims;
+        this.claims = claims;
     }
 
     public String getKey() {
@@ -49,11 +40,40 @@ public class ClaimList extends BaseModel {
         return  claims;
     }
 
-    public void setId(String id) {
-       this.id = id;
+    public boolean addClaim(Claim claim) {
+        if (numberOfClaims < Constants.Claim.CLAIM_MAX_COUNT) {
+            this.claims.add(claim);
+            ++numberOfClaims;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void addClaim(Claim claim) {
-       this.claims.add(claim);
+    public boolean setClaim(Claim claim) {
+        for (int i = 0; i < claims.size(); ++i) {
+            if (claims.get(i).getId().equals(claim.getId())) {
+                return claims.set(i, claim) != null;
+            }
+        }
+
+        return false;
+    }
+
+    public Claim getClaim(String id) {
+        for (Claim claim : claims) {
+            if (claim.getId().equals(id)) {
+                return claim;
+            }
+        }
+        return null;
+    }
+
+    public String getNextClaimId() {
+        if (claims.size() < Constants.Claim.CLAIM_MAX_COUNT) {
+            return String.format(Locale.getDefault(), "%d", claims.size());
+        } else {
+            return null;
+        }
     }
 }
