@@ -4,22 +4,27 @@ import android.app.Application;
 
 import com.example.groupproject.AppController;
 import com.example.groupproject.di.modules.ActivityBuilderModule;
+import com.example.groupproject.di.modules.MiscModule;
 import com.example.groupproject.di.modules.NetworkModule;
 import com.example.groupproject.di.modules.RepositoryModule;
 import com.example.groupproject.di.modules.SourceModule;
 import com.example.groupproject.di.modules.ViewModelModule;
 import com.example.groupproject.ui.factory.ViewModelFactory;
 
+import java.lang.annotation.Retention;
+
 import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 @Singleton
 @Component(
     modules = {
+        MiscModule.class,
         NetworkModule.class,
         SourceModule.class,
         RepositoryModule.class,
@@ -29,7 +34,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
     }
 )
 public interface AppComponent extends AndroidInjector<AppController> {
-
     @Component.Builder
     interface Builder {
 

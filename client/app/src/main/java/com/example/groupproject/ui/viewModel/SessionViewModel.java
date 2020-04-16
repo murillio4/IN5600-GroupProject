@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public class SessionViewModel extends AndroidViewModel {
+public class SessionViewModel extends ViewModel {
     private static final String TAG = "SessionViewModel";
 
     private MutableLiveData<Person> sessionState = new MutableLiveData<>();
@@ -24,8 +24,7 @@ public class SessionViewModel extends AndroidViewModel {
     private Disposable sessionObserver;
 
     @Inject
-    public SessionViewModel(Application application, SessionRepository sessionRepository) {
-        super(application);
+    public SessionViewModel(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
 
         sessionObserver = this.sessionRepository.getSessionObserver().subscribe(session -> {

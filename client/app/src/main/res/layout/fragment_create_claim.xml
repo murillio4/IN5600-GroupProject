@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context=".ui.fragment.CreateClaimFragment">
+
+    <TextView
+        android:id="@+id/create_claim_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/create_claim_title"
+        android:textSize="20sp"
+        android:textColor="#404140"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_description_title" />
+
+    <TextView
+        android:id="@+id/create_claim_description_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="@string/claim_description"
+        android:textSize="16sp"
+        android:textColor="#404140"
+        app:layout_constraintTop_toBottomOf="@id/create_claim_title"
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_description_input" />
+
+    <EditText
+        android:id="@+id/create_claim_description_input"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#F1F2F1"
+        android:gravity="start"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/create_claim_description_title"
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_add_map_location_button"
+        android:autofillHints=""
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/create_claim_add_map_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingHorizontal="10dp"
+        android:gravity="start|center"
+        android:background="@color/secondaryColor"
+        android:text="@string/claim_add_map_location"
+        app:layout_constraintTop_toBottomOf="@id/create_claim_description_input"
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_add_photo_button"
+        style="@style/Widget.MyTheme.YellowButton"/>
+
+    <Button
+        android:id="@+id/create_claim_add_photo_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"
+        android:gravity="start|center"
+        android:text="@string/claim_add_photo"
+        app:layout_constraintTop_toBottomOf="@id/create_claim_add_map_location_button"
+        app:layout_constraintBottom_toTopOf="@+id/create_claim_submit_button"
+        style="@style/Widget.MyTheme.YellowButton"/>
+
+    <Button
+        android:id="@+id/create_claim_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/claim_submit"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</LinearLayout>

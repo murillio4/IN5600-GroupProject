@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primaryDarkColor"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/close_dropdown_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_close_white_24dp"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:contentDescription="@string/close_dropdown_menu" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/signed_in_user_name"
+        android:textColor="@color/white_50"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:clickable="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:id="@+id/sign_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white_50"
+        android:textAlignment="center"
+        android:text="@string/action_sign_out"
+        android:textSize="17sp"/>
+</LinearLayout>

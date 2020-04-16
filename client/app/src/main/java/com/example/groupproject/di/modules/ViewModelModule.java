@@ -5,14 +5,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.groupproject.di.ViewModelKey;
 import com.example.groupproject.ui.factory.ViewModelFactory;
+import com.example.groupproject.ui.viewModel.ClaimsViewModel;
+import com.example.groupproject.ui.viewModel.FormViewModel;
+import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
+import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
 
 import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 //inspired by https://github.com/anitaa1990/Dagger2-Sample
@@ -23,7 +26,6 @@ public abstract class ViewModelModule {
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);
 
-
     @Binds
     @IntoMap
     @ViewModelKey(SessionViewModel.class)
@@ -33,4 +35,24 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel.class)
     protected abstract ViewModel loginViewModel(LoginViewModel loginViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ClaimsViewModel.class)
+    protected abstract ViewModel claimsViewModel(ClaimsViewModel claimsViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PhotoViewModel.class)
+    protected abstract ViewModel photoViewModel(PhotoViewModel photoViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PhotoViewModel.class)
+    protected abstract ViewModel locationViewModel(LocationViewModel locationViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormViewModel.class)
+    protected abstract ViewModel formViewModel(FormViewModel formViewModel);
 }

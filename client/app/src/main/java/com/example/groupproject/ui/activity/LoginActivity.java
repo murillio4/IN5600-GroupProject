@@ -89,7 +89,8 @@ public class LoginActivity extends DaggerAppCompatActivity {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
-            return false;
+            return
+false;
         });
 
         loginButton.setOnClickListener(v -> {

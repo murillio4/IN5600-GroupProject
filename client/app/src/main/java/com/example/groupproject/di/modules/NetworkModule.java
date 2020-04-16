@@ -13,8 +13,6 @@ import com.example.groupproject.data.network.request.VolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.File;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
