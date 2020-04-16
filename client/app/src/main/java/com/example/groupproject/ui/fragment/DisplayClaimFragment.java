@@ -158,6 +158,15 @@ public class DisplayClaimFragment extends DaggerFragment implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Edit claim", Toast.LENGTH_LONG).show();
+                Bundle extras = new Bundle();
+                extras.putSerializable(Constants.Serializable.Claim, claim);
+                UpdateClaimFragment updateClaimFragment = new UpdateClaimFragment();
+                updateClaimFragment.setArguments(extras);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment_container, updateClaimFragment)
+                        .addToBackStack(TAG)
+                        .commit();
             }
         });
     }

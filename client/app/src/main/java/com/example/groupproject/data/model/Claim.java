@@ -26,6 +26,22 @@ public class Claim implements Serializable {
         this.location = location;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public String getId() {
         return id;
     }

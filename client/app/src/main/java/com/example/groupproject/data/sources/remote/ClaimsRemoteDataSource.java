@@ -39,7 +39,7 @@ public class ClaimsRemoteDataSource extends BaseRemoteSource {
 
     public Observable<Optional<String>> updateClaim(
             String userId, String claimId, String description, String photoPath, String location) {
-        return volleyRequest.post(Constants.Api.InsertClaim, String.class)
+        return volleyRequest.post(Constants.Api.UpdateClaim, String.class)
                 .addQueryParam("userId", userId)
                 .addQueryParam("indexUpdateClaim", claimId)
                 .addQueryParam("updateClaimDes", description)

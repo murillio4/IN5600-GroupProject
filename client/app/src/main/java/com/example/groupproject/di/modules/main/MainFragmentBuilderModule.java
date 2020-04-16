@@ -6,6 +6,7 @@ import com.example.groupproject.ui.fragment.CreateClaimFragment;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DropdownMenuFragment;
+import com.example.groupproject.ui.fragment.UpdateClaimFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -28,4 +29,7 @@ public abstract class MainFragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract CreateClaimFragment contributeCreateClaimFragment();
+
+    @ContributesAndroidInjector
+    abstract UpdateClaimFragment contributeUpdateClaimFragment();
 }
