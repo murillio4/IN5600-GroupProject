@@ -11,8 +11,9 @@ import dagger.Provides;
 
 @Module
 public class MiscModule {
-    @Singleton
+
     @Provides
+    @Singleton
     Context providesContext(Application application) {
         return application.getApplicationContext();
     }

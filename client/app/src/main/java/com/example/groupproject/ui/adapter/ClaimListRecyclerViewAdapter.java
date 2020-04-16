@@ -43,7 +43,7 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
         Claim claim = claimList.getClaims().get(position);
 
         holder.setListItemImage(context, claim.getPhotoPath())
-                .setListItemText(claim.getId())
+                .setListItemText("Claim " + claim.getId())
                 .setParentLayoutOnClickListner(v -> startDisplayClaimFragment(claim));
     }
 

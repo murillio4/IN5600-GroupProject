@@ -1,5 +1,7 @@
 package com.example.groupproject.ui.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,7 +25,7 @@ import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.Normalizer;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -49,6 +51,9 @@ public class CreateClaimFragment extends DaggerFragment
 
     @Inject
     ClaimsViewModel claimsViewModel;
+
+    @Inject
+    Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,39 +147,40 @@ public class CreateClaimFragment extends DaggerFragment
     }
 
     private void toClaimListFragment() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
 
     private void handleAddMapLocationButton() {
         Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         new LocationPickerDialogFragment(location).showNow(fm);
     }
 
     private void handleAddPhotoButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         new PhotoDialogFragment().showNow(fm);
     }
 
     private void handleSubmitButton() {
         Claim claim = buildClaim();
-        Log.i(TAG, "handleSubmitButton: " + claim);
 
         if (claim == null) {
             Log.d(TAG, "handleSubmitButton: Failed to build claim");
+            Toast.makeText(context, "Failed to post claim", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        claimsViewModel.createClaim(claim).observe(getActivity(), createClaimResult -> {
+        claimsViewModel.createClaim(claim).observe(Objects.requireNonNull(getActivity()),
+                createClaimResult -> {
             switch (createClaimResult.getStatus()) {
                 case LOADING:
                     Log.d(TAG, "onCreate: Loading resource");
                     break;
                 case ERROR:
-                    Log.d(TAG, "onCreate: Failed to fetch get claims");
+                    Log.d(TAG, "onCreate: Failed to create claim");
                     break;
                 case SUCCESS:
-                    Log.d(TAG, "onCreate: Successfully fetched claims");
+                    Log.d(TAG, "onCreate: Successfully posted claim");
                     toClaimListFragment();
                     break;
                 default:
@@ -186,9 +192,28 @@ public class CreateClaimFragment extends DaggerFragment
 
     private Claim buildClaim() {
         String id = claimsViewModel.getNextClaimId();
-        String description = descriptionEditText.getText().toString();
+        if (id == null) {
+            Log.d(TAG, "buildClaim: Failed to get next claim id");
+            Toast.makeText(context, "Faild to get next claim id", Toast.LENGTH_SHORT).show();
+            return null;
+        }
 
-        if (id == null || description.length() == 0 || photoUri == null || location == null) {
+        String description = descriptionEditText.getText().toString();
+        if (description.length() == 0) {
+            Log.d(TAG, "buildClaim: Claim has no description");
+            Toast.makeText(context, "Claim has no description", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (location == null) {
+            Log.d(TAG, "buildClaim: Location not selected");
+            Toast.makeText(context, "Location not selected", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (photoUri == null) {
+            Log.d(TAG, "buildClaim: No photo selected");
+            Toast.makeText(context, "No photo selected", Toast.LENGTH_SHORT).show();
             return null;
         }
 
