@@ -17,41 +17,62 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
 import com.example.groupproject.ui.view.LoggedInUserView;
+import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class LoginActivity extends DaggerAppCompatActivity {
+public class LoginActivity extends DaggerAppCompatActivity
+        implements TextWatcher, TextView.OnEditorActionListener, View.OnClickListener {
+
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private Button loginButton;
+    private ProgressBar loadingProgressBar;
 
     @Inject
-    public LoginViewModel loginViewModel;
+    LoginViewModel loginViewModel;
+
+    @Inject
+    FormViewModel formViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText usernameEditText = findViewById(R.id.username);
-        final EditText passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        usernameEditText = findViewById(R.id.username);
+        passwordEditText = findViewById(R.id.password);
+        loginButton = findViewById(R.id.login);
+        loadingProgressBar = findViewById(R.id.loading);
 
-        loginViewModel.getLoginFormState().observe(this, loginFormState -> {
-            if (loginFormState == null) {
-                return;
+        usernameEditText.addTextChangedListener(this);
+        passwordEditText.addTextChangedListener(this);
+        passwordEditText.setOnEditorActionListener(this);
+        loginButton.setOnClickListener(this);
+
+        formViewModel.getUsernameState().observe(this, usernameState -> {
+            if (usernameState != null) {
+                loginButton.setEnabled(usernameState.isDataValid());
+                if (usernameState.getData() != null) {
+                    usernameEditText.setError(getString(usernameState.getData()));
+                }
             }
-            loginButton.setEnabled(loginFormState.isDataValid());
-            if (loginFormState.getUsernameError() != null) {
-                usernameEditText.setError(getString(loginFormState.getUsernameError()));
-            }
-            if (loginFormState.getPasswordError() != null) {
-                passwordEditText.setError(getString(loginFormState.getPasswordError()));
+        });
+
+        formViewModel.getPasswordState().observe(this, passwordState -> {
+            if (passwordState != null) {
+                loginButton.setEnabled(passwordState.isDataValid());
+                if (passwordState.getData() != null) {
+                    passwordEditText.setError(getString(passwordState.getData()));
+                }
             }
         });
 
@@ -68,40 +89,44 @@ public class LoginActivity extends DaggerAppCompatActivity {
                 startMainActivity();
             }
         });
-
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-            return
-false;
-        });
-
-        loginButton.setOnClickListener(v -> {
-            loadingProgressBar.setVisibility(View.VISIBLE);
-            loginViewModel.login(usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString());
-        });
     }
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() { /* Prevent user from going back */ }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        formViewModel.usernameDataChanged(usernameEditText.getText().toString());
+        formViewModel.passwordDataChanged(passwordEditText.getText().toString());
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            loginViewModel.login(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString());
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.login:
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                loginViewModel.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+                break;
+            default:
+                break;
+        }
+    }
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));

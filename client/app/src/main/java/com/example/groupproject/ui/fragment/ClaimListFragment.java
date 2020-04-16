@@ -46,13 +46,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Person loggedInPerson = loginViewModel.getLoggedInPerson();
-        if (loggedInPerson != null) {
-            fetchClaimsForPersonWithId(loggedInPerson.getId());
-        } else {
-            Toast.makeText(context, "Unable to get logged in user", Toast.LENGTH_LONG).show();
-        }
+        fetchClaimsForPersonWithId();
     }
 
     @Override
@@ -81,8 +75,8 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
                 LinearLayoutManager.VERTICAL, false));
     }
 
-    private void fetchClaimsForPersonWithId(String id) {
-        claimsViewModel.getClaims(id).observe(getActivity(), claimsResult -> {
+    private void fetchClaimsForPersonWithId() {
+        claimsViewModel.getClaims().observe(getActivity(), claimsResult -> {
             switch (claimsResult.getStatus()) {
                 case LOADING:
                     Log.d(TAG, "onCreate: Loading resource");

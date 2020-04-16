@@ -160,7 +160,7 @@ public class CreateClaimFragment extends DaggerFragment
             return null;
         }
 
-        return new Claim(id, null, null, null);
+        return new Claim(id, null, null, "59.9116367:10.7502881");
     }
 
     protected void postClaim() {

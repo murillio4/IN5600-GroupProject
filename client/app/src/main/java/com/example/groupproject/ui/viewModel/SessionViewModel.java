@@ -1,9 +1,7 @@
 package com.example.groupproject.ui.viewModel;
 
-import android.app.Application;
 import android.util.Log;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -43,15 +41,15 @@ public class SessionViewModel extends ViewModel {
         sessionObserver.dispose();
     }
 
-    public void removeSession() {
-        sessionRepository.logout();
-    }
-
     public Person getSession() {
         return sessionRepository.getSession();
     }
 
     public LiveData<Person> getSessionObserver() {
         return sessionState;
+    }
+
+    public void removeSession() {
+        sessionRepository.logout();
     }
 }

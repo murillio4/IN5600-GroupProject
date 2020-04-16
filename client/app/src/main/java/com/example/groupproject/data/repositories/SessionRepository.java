@@ -30,15 +30,28 @@ public class SessionRepository {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
     }
-    
+
+    public Person getSession() {
+        return localDataSource.getUser();
+    }
+
+    public Observable<Person> getSessionObserver() {
+        return personPublishSubject;
+    }
+
+    public Observable<Resource<Person>> login(String username, String password) {
+        return buildLoginNetworkBoundResource(username, password).getAsObservable();
+    }
+
     public void logout() {
-        Log.i(TAG, "logout");
+        Log.i(TAG, "stopSession: ");
         localDataSource.removeUser();
         personPublishSubject.onError(new Throwable("User logged out"));
         personPublishSubject = PublishSubject.create();
     }
 
-    public Observable<Resource<Person>> login(String username, String password) {
+    private NetworkBoundResource<Person, Person> buildLoginNetworkBoundResource(
+            String username, String password) {
         return new NetworkBoundResource<Person, Person>() {
 
             @Override
@@ -67,18 +80,11 @@ public class SessionRepository {
             protected Observable<Resource<Person>> fetchRemote() {
                 return remoteDataSource.login(username, password)
                         .flatMap(remoteResponse ->
-                            remoteResponse
-                                    .map(person -> Observable.just(Resource.success(person)))
-                                    .orElseGet(() -> Observable.error(new Throwable("Error signing in user"))));
+                                remoteResponse
+                                        .map(person -> Observable.just(Resource.success(person)))
+                                        .orElseGet(() -> Observable.error(
+                                                new Throwable("Error signing in user"))));
             }
-        }.getAsObservable();
-    }
-
-    public Observable<Person> getSessionObserver() {
-        return personPublishSubject;
-    }
-
-    public Person getSession() {
-        return localDataSource.getUser();
+        };
     }
 }

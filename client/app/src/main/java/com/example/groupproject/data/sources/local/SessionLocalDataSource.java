@@ -9,33 +9,33 @@ import com.google.gson.Gson;
 
 public class SessionLocalDataSource {
     private Gson gson;
-    private SharedPreferences pref;
-    private Person user;
+    private SharedPreferences sharedPreferences;
 
     public SessionLocalDataSource(Context context, Gson gson) {
         this.gson = gson;
-        this.pref = context.getSharedPreferences(
+        this.sharedPreferences = context.getSharedPreferences(
                 Constants.SharedPreferences.Name.Person, Context.MODE_PRIVATE);
-
-        String userString = pref.getString(Constants.SharedPreferences.Keys.Person, null);
-        this.user = userString == null
-                ? null
-                : gson.fromJson(userString, Person.class);
     }
 
     public void setUser(Person user) {
-        this.user = user;
-
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString(Constants.SharedPreferences.Keys.Person, gson.toJson(user));
-        editor.apply();
+        sharedPreferences.edit()
+                .putString(Constants.SharedPreferences.Keys.Person, gson.toJson(user))
+                .apply();
     }
 
     public Person getUser() {
-        return user;
+        return getUserFromSharedPreferences();
     }
 
     public void removeUser() {
-        pref.edit().clear().apply();
+        sharedPreferences.edit().clear().apply();
+    }
+
+    private String getUserStringFromSharedPreferences() {
+        return sharedPreferences.getString(Constants.SharedPreferences.Keys.Person, null);
+    }
+
+    private Person getUserFromSharedPreferences() {
+        return gson.fromJson(getUserStringFromSharedPreferences(), Person.class);
     }
 }

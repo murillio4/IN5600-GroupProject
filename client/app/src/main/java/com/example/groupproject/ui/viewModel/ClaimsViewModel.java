@@ -45,7 +45,8 @@ public class ClaimsViewModel extends ViewModel {
         return claimsRepository.getNextClaimId();
     }
 
-    public LiveData<Resource<ClaimList>> getClaims(String id) {
+    public LiveData<Resource<ClaimList>> getClaims() {
+        String id = sessionRepository.getSession().getId();
         claimsRepository.getClaims(id).subscribe(buildGetClaimsDisposableObserver());
         return claimsResult;
     }

@@ -47,11 +47,8 @@ public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implemen
             name.setText(signedInUser.getName());
         }
 
-        ImageView close = view.findViewById(R.id.close_dropdown_menu);
-        close.setOnClickListener(this);
-
-        /*Button signOut = view.findViewById(R.id.sign_out);
-        signOut.setOnClickListener(this);*/
+        view.findViewById(R.id.close_dropdown_menu).setOnClickListener(this);
+        view.findViewById(R.id.sign_out).setOnClickListener(this);
 
         return view;
     }
@@ -66,10 +63,10 @@ public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implemen
             case R.id.close_dropdown_menu:
                 dismiss();
                 break;
-            /*case R.id.sign_out:
+            case R.id.sign_out:
                 sessionViewModel.removeSession();
                 dismiss();
-                break;*/
+                break;
             default:
                 break;
         }
