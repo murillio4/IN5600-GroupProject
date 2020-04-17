@@ -9,7 +9,7 @@ import com.example.groupproject.data.Resource;
 import com.example.groupproject.data.repositories.SessionRepository;
 import com.example.groupproject.data.model.Person;
 import com.example.groupproject.R;
-import com.example.groupproject.data.util.MiscUtil;
+import com.example.groupproject.data.util.HashUtil;
 import com.example.groupproject.ui.view.LoggedInUserView;
 import com.example.groupproject.ui.result.LoginResult;
 
@@ -32,7 +32,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
-        sessionRepository.login(username, MiscUtil.md5(password))
+        sessionRepository.login(username, HashUtil.md5(password))
                 .subscribe(buildLoginDisposableObserver());
     }
 

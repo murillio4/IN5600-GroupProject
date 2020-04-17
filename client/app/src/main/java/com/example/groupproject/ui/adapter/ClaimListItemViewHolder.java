@@ -45,7 +45,7 @@ public class ClaimListItemViewHolder extends RecyclerView.ViewHolder
     public ClaimListItemViewHolder setListItemImage(@NonNull  Context context, String imagePath) {
         RequestBuilder<Bitmap> requestBuilder = Glide.with(context).asBitmap().addListener(this);
 
-        if (ImageUtil.Storage.fileExists(context, Uri.parse(imagePath))) {
+        if (ImageUtil.fileExists(context, Uri.parse(imagePath))) {
             requestBuilder.load(imagePath);
         } else {
             requestBuilder.load(R.drawable.ic_launcher_background);

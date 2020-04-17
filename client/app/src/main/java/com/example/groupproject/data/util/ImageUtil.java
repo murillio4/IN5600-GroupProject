@@ -1,5 +1,6 @@
 package com.example.groupproject.data.util;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,137 +25,106 @@ import java.util.Date;
 public class ImageUtil {
 
     private static final String TAG = "ImageUtil";
+    private static final String MIME_TYPE = "image/jpg";
+    private static final String MIME_TYPE_SUFFIX = ".jpg";
 
     private ImageUtil() {}
 
-    public static class Storage {
+    public static Uri saveBitmap(
+            @NonNull Context context, @NonNull Bitmap bitmap, @NonNull String displayName)
+            throws IOException {
 
-        private static final String TAG = "ImageUtil.Storage";
+        ContentValues contentValues = createContentValues(displayName);
+        ContentResolver contentResolver = context.getContentResolver();
+        OutputStream outputStream = null;
+        Uri imageUri = null;
 
-        private Storage() {}
-
-        public static Uri saveBitmap(@NonNull Context context, @NonNull Bitmap bitmap,
-                              @NonNull String displayName) throws IOException {
-            ContentValues contentValues = createContentValues(
-                    displayName, "image/jpg", Environment.DIRECTORY_PICTURES);
-            ContentResolver contentResolver = context.getContentResolver();
-
-            OutputStream outputStream = null;
-            Uri imageUri = null;
-
-            try {
-                Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
-                imageUri = contentResolver.insert(contentUri, contentValues);
-                if (imageUri == null) {
-                    throw new IOException("Failed to create image URI!");
-                }
-
-                outputStream = contentResolver.openOutputStream(imageUri);
-                if (outputStream == null) {
-                    throw new IOException("Failed to open output stream!");
-                }
-
-                // Move to compressor class
-                if (bitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream) == false) {
-                    throw new IOException("Failed to save bitmap");
-                }
-            } catch (IOException e) {
-                if (imageUri != null) {
-                    contentResolver.delete(imageUri, null, null);
-                }
-            } finally {
-                if (outputStream != null) {
-                    outputStream.close();
-                }
+        try {
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            if (imageUri == null) {
+                throw new IOException("Failed to create image URI!");
             }
 
-            return imageUri;
-        }
-
-        public Uri saveImageFile(@NonNull Context context,
-                                 @NonNull File imageFile) throws IOException {
-            return null;
-        }
-
-        public Uri saveImage(@NonNull Context context, @NonNull Uri imageUri) throws IOException {
-            return null;
-        }
-
-        public static File createImageFile(@NonNull Context context) throws IOException {
-            return File.createTempFile(
-                    getImageFileName(),
-                    ".jpg",
-                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            );
-        }
-        
-        public static boolean fileExists(@NonNull Context context, Uri uri) {
-            ParcelFileDescriptor parcelFileDescriptor = null;
-            boolean fileExists = true;
-
-            try {
-                parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "fileExists: Unable to locate file " + uri);
-                fileExists = false;
-            } finally {
-                if (parcelFileDescriptor != null) {
-                    try {
-                        parcelFileDescriptor.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            outputStream = contentResolver.openOutputStream(imageUri);
+            if (outputStream == null) {
+                throw new IOException("Failed to open output stream!");
             }
 
-            return fileExists;
+            if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream)) {
+                throw new IOException("Failed to save bitmap");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            if (imageUri != null) {
+                contentResolver.delete(imageUri, null, null);
+                imageUri = null;
+            }
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
         }
 
-        public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) throws IOException {
-            ParcelFileDescriptor parcelFileDescriptor =
-                    context.getContentResolver().openFileDescriptor(uri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-            parcelFileDescriptor.close();
-            return bitmap;
-        }
-
-        private static ContentValues createContentValues(@NonNull String displayName,
-                                                  @NonNull String mimeType,
-                                                  @NonNull String relativePath) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
-            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
-            return contentValues;
-        }
-
-        private static String getTimeStampString() {
-            return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        }
-
-        private static String getImageFileName() {
-            return "JPEG_" + getTimeStampString() + "_";
-        }
-
+        return imageUri;
     }
 
-    public static class Compressor {
-
-        private Compressor() {}
-
-        private String destinationDirectory(@NonNull Context context) {
-            return context.getCacheDir().getPath() + File.separator + "images";
-        }
-
-
+    public static File createImageFile(@NonNull Context context) throws IOException {
+        return File.createTempFile(
+                getImageFileName(),
+                ImageUtil.MIME_TYPE_SUFFIX,
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        );
     }
 
-    public static class Converter {
+    public static boolean fileExists(@NonNull Context context, Uri uri) {
+        ParcelFileDescriptor parcelFileDescriptor = null;
+        boolean fileExists = true;
 
-        private Converter() {}
+        try {
+            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+        } catch (FileNotFoundException e) {
+            fileExists = false;
+        } finally {
+            if (parcelFileDescriptor != null) {
+                try {
+                    parcelFileDescriptor.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
+        return fileExists;
+    }
+
+    public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                context.getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return bitmap;
+    }
+
+    private static ContentValues createContentValues(@NonNull String displayName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, ImageUtil.MIME_TYPE);
+        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+        return contentValues;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private static String getTimeStampString() {
+        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    }
+
+    private static String getImageFileName() {
+        return "JPEG_" + getTimeStampString() + "_";
+    }
+
+    private String destinationDirectory(@NonNull Context context) {
+        return context.getCacheDir().getPath() + File.separator + "images";
     }
 
 }

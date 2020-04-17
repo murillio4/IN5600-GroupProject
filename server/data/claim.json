@@ -1,30 +1,30 @@
 [
   {
     "id": "0",
-    "numberOfClaims": "0",
+    "numberOfClaims": "1",
     "claimId": [
-      "na",
+      "0",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimDes": [
-      "na",
+      "jdjdjd",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimPhoto": [
-      "na",
+      "content://media/external/file/56537",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimLocation": [
-      "na",
+      "59.963242,10.736550",
       "na",
       "na",
       "na",

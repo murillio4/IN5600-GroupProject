@@ -3,9 +3,9 @@ package com.example.groupproject.data.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MiscUtil {
+public class HashUtil {
 
-    private MiscUtil() {}
+    private HashUtil() {}
 
     public static String md5(String password) {
         MessageDigest messageDigest;
@@ -25,8 +25,7 @@ public class MiscUtil {
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return "";
     }
 }

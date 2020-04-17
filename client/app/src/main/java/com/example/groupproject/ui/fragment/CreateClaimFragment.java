@@ -40,7 +40,8 @@ public class CreateClaimFragment extends DaggerFragment
     private static final String TAG = "CreateClaimFragment";
 
     protected Claim claim;
-    protected EditText descriptionEditText;
+
+    EditText descriptionEditText;
 
     @Inject
     PhotoViewModel photoViewModel;
@@ -106,7 +107,7 @@ public class CreateClaimFragment extends DaggerFragment
             Result<LatLng> result = locationResult.getContentIfNotHandled();
 
             if (result.getSuccess() != null) {
-                claim.setLocation(MapUtil.Location.latLngToLocationString(result.getSuccess()));
+                claim.setLocation(MapUtil.latLngToLocationString(result.getSuccess()));
                 Log.d(TAG, "onCreate: LocationResult: " + result.getSuccess());
             }
 
@@ -160,7 +161,7 @@ public class CreateClaimFragment extends DaggerFragment
             return null;
         }
 
-        return new Claim(id, null, null, "59.9116367:10.7502881");
+        return new Claim(id, null, null, null);
     }
 
     protected void postClaim() {
@@ -196,7 +197,7 @@ public class CreateClaimFragment extends DaggerFragment
         Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
         FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         new LocationPickerDialogFragment(
-                MapUtil.Location.stringLocationToLatLng(claim.getLocation())).showNow(fm);
+                MapUtil.locationStringToLatLng(claim.getLocation())).showNow(fm);
     }
 
     private void handleAddPhotoButton() {
