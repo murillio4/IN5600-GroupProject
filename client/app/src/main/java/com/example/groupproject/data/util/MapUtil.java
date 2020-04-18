@@ -16,18 +16,19 @@ public class MapUtil {
         }
 
         String[] locationArray = locationString.split(",", 2);
-        if (locationArray.length <= 0) {
+        if (locationArray.length != 2) {
             return null;
         }
 
+        LatLng latLng = null;
         try {
-            double lat = Double.parseDouble(locationArray[0]);
-            double lng = Double.parseDouble(locationArray[1]);
-            return new LatLng(lat, lng);
+            latLng = new LatLng(Double.parseDouble(locationArray[0]),
+                                Double.parseDouble(locationArray[1]));
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return null;
         }
+
+        return latLng;
     }
 
     public static String latLngToLocationString(@Nullable LatLng latLng) {

@@ -30,6 +30,7 @@ public class ImageUtil {
 
     private ImageUtil() {}
 
+    // Do we need this?
     public static Uri saveBitmap(
             @NonNull Context context, @NonNull Bitmap bitmap, @NonNull String displayName)
             throws IOException {
@@ -68,12 +69,19 @@ public class ImageUtil {
         return imageUri;
     }
 
-    public static File createImageFile(@NonNull Context context) throws IOException {
-        return File.createTempFile(
-                getImageFileName(),
-                ImageUtil.MIME_TYPE_SUFFIX,
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        );
+    public static File createImageFile(@NonNull Context context) {
+        File file = null;
+
+        try {
+            file = File.createTempFile(
+                    getImageFileName(),
+                    ImageUtil.MIME_TYPE_SUFFIX,
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
     }
 
     public static boolean fileExists(@NonNull Context context, Uri uri) {
@@ -97,7 +105,9 @@ public class ImageUtil {
         return fileExists;
     }
 
+    // Do we need this?
     public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) throws IOException {
+
         ParcelFileDescriptor parcelFileDescriptor =
                 context.getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
