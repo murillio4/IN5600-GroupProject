@@ -1,7 +1,9 @@
 package com.example.groupproject.data.util;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Locale;
@@ -9,6 +11,9 @@ import java.util.Locale;
 public class MapUtil {
 
     private MapUtil() {}
+
+    public static int DEFAULT_ZOOM = 10;
+    public static int DEFAULT_BEARING = 0;
 
     public static LatLng locationStringToLatLng(@Nullable String locationString) {
         if (locationString == null) {
@@ -37,5 +42,13 @@ public class MapUtil {
         }
 
         return String.format(Locale.getDefault(), "%f,%f", latLng.latitude, latLng.longitude);
+    }
+
+    public static CameraPosition buildCameraPosition(@NonNull LatLng location) {
+        return CameraPosition.builder()
+                .target(location)
+                .zoom(MapUtil.DEFAULT_ZOOM)
+                .bearing(MapUtil.DEFAULT_BEARING)
+                .build();
     }
 }

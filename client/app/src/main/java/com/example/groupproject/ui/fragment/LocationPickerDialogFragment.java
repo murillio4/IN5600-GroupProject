@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
+import com.example.groupproject.data.util.MapUtil;
 import com.example.groupproject.ui.adapter.LocationSuggestionsAdapter;
 import com.example.groupproject.ui.result.Result;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
@@ -375,14 +376,6 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                 .check();
     }
 
-    private CameraPosition buildCameraPosition(LatLng location) {
-        return CameraPosition.builder()
-                .target(location)
-                .zoom(DEFAULT_ZOOM)
-                .bearing(DEFAULT_BEARING)
-                .build();
-    }
-
     private void getDeviceLocation() {
         fusedLocationProviderClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), location -> {
@@ -413,7 +406,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
 
     private void moveCamera(LatLng latLng) {
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                buildCameraPosition(latLng)));
+                MapUtil.buildCameraPosition(latLng)));
     }
 
     private void moveCamera(Location location) {

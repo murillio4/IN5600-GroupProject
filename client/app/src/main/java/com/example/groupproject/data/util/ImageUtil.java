@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
@@ -105,15 +107,38 @@ public class ImageUtil {
         return fileExists;
     }
 
-    // Do we need this?
-    public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) throws IOException {
+    public static Bitmap getBitmapFromUri(@NonNull Context context, Uri uri) {
 
-        ParcelFileDescriptor parcelFileDescriptor =
-                context.getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
+        ParcelFileDescriptor parcelFileDescriptor = null;
+        Bitmap bitmap = null;
+        try {
+            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+            if (parcelFileDescriptor != null) {
+                bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return bitmap;
+    }
+
+    public static Drawable getDrawableFromUri(@NonNull Context context, Uri uri) {
+        Bitmap bitmap = ImageUtil.getBitmapFromUri(context, uri);
+
+        if (bitmap != null) {
+            return new BitmapDrawable(context.getResources(), bitmap);
+        } else {
+            return null;
+        }
     }
 
     private static ContentValues createContentValues(@NonNull String displayName) {

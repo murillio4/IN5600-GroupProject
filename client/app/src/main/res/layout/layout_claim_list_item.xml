@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="15dp"
     android:id="@+id/claim_list_item"
-    android:background="#C3C4C3"
+    android:background="@color/primaryLightColor"
     android:layout_margin="15dp" >
 
     <de.hdodenhof.circleimageview.CircleImageView

@@ -1,5 +1,6 @@
 package com.example.groupproject.ui.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,13 @@ import com.example.groupproject.data.model.Person;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -60,6 +68,35 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
         }
     }
 
+    private void requestPermissions(Runnable callback) {
+        Dexter.withContext(getContext())
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
+                            callback.run();
+                        }
+                        if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied()) {
+                            Log.d(TAG, "onPermissionsChecked: isAnyPermissionPermanentlyDenied?");
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list,
+                                                                   PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                })
+                .withErrorListener(error -> {
+                    Log.d(TAG, "requestPermissions: Failed to request permissions");
+                })
+                .onSameThread()
+                .check();
+    }
+
     private void startCreateClaimFragment() {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -86,7 +123,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
                     break;
                 case SUCCESS:
                     Log.d(TAG, "onCreate: Successfully fetched claims");
-                    initClaimListRecyclerView(claimsResult.getData());
+                    requestPermissions(() -> initClaimListRecyclerView(claimsResult.getData()));
                     break;
                 default:
                     Log.d(TAG, "onCreate: Unknown result");

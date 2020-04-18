@@ -134,21 +134,18 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
-            Log.d(TAG, "startImageCaptureActivity: Image Capture");
-            try {
-                File imageFile = ImageUtil.createImageFile(context);
-                imageUri = null;
+            File imageFile = ImageUtil.createImageFile(context);
+            imageUri = null;
 
-                if (imageFile != null) {
-                    imageUri = FileProvider.getUriForFile(
-                            context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
+            if (imageFile != null) {
+                imageUri = FileProvider.getUriForFile(
+                        context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
+                if (imageUri != null) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, Constants.REQUEST_CODE.CAMERA.ordinal());
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "startImageCaptureActivity: Error creating image file", e);
-                dismiss();
             }
+            dismiss();
         } else {
             Log.d(TAG, "startImageCaptureActivity: No packet manager available");
             dismiss();
