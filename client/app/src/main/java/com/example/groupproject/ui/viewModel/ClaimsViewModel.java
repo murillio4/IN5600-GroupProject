@@ -1,22 +1,16 @@
 package com.example.groupproject.ui.viewModel;
 
-import android.app.Application;
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.groupproject.data.Resource;
-import com.example.groupproject.data.Status;
+import com.example.groupproject.data.network.model.Resource;
+import com.example.groupproject.data.network.model.Status;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.data.repositories.ClaimsRepository;
 import com.example.groupproject.data.repositories.SessionRepository;
-import com.example.groupproject.data.util.MapUtil;
-import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;
 

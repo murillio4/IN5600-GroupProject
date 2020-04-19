@@ -25,8 +25,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
 import com.example.groupproject.data.util.MapUtil;
+import com.example.groupproject.data.util.PermissionUtil;
 import com.example.groupproject.ui.adapter.LocationSuggestionsAdapter;
-import com.example.groupproject.ui.result.Result;
+import com.example.groupproject.data.Result;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,7 +41,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
@@ -349,31 +349,15 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     }
 
     private void requestPermissions(Runnable callback) {
-        Dexter.withContext(getContext())
-                .withPermissions(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                            callback.run();
-                        }
-                        if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied()) {
-                            Log.d(TAG, "onPermissionsChecked: isAnyPermissionPermanentlyDenied?");
-                        }
-                    }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list,
-                                                                   PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                })
-                .withErrorListener(error -> dismiss())
-                .onSameThread()
-                .check();
+        PermissionUtil.requestPermissions(
+            getContext(),
+            new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            },
+            callback,
+            dexterError -> dismiss());
     }
 
     private void getDeviceLocation() {

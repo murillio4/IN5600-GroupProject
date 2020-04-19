@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.groupproject.ui.event.Event;
-import com.example.groupproject.ui.result.Result;
+import com.example.groupproject.data.Event;
+import com.example.groupproject.data.Result;
 import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;

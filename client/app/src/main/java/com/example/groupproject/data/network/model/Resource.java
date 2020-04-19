@@ -1,4 +1,4 @@
-package com.example.groupproject.data;
+package com.example.groupproject.data.network.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

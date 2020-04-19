@@ -18,7 +18,8 @@ import com.example.groupproject.BuildConfig;
 import com.example.groupproject.R;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.util.ImageUtil;
-import com.example.groupproject.ui.result.Result;
+import com.example.groupproject.data.Result;
+import com.example.groupproject.data.util.PermissionUtil;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -27,7 +28,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -70,31 +70,14 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
 
     private void requestStoragePermission(Runnable callback) {
         Log.i(TAG, "requestStoragePermission");
-        Dexter.withContext(getContext())
-                .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        //Manifest.permission.CAMERA)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
-                            Log.i(TAG, "requestStoragePermission: All permissions granted");
-                            callback.run();
-                        }
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            Log.d(TAG, "onPermissionsChecked: Some permissions permanently denied");
-                        }
-                    }
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-                                                                   PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                })
-                .withErrorListener(error -> dismiss())
-                .onSameThread()
-                .check();
+        PermissionUtil.requestPermissions(
+            getContext(),
+            new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            },
+            callback,
+            dexterError -> dismiss());
     }
 
     @Override
@@ -181,6 +164,4 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implement
             photoViewModel.setPhotoResult(Result.error(R.string.photo_dialog_gallery_error));
         }
     }
-
-
 }

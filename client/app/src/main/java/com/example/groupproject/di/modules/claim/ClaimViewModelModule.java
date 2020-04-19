@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.groupproject.di.ViewModelKey;
-import com.example.groupproject.ui.factory.ViewModelFactory;
+import com.example.groupproject.di.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 

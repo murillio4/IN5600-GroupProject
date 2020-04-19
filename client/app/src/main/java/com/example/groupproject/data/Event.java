@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.event;
+package com.example.groupproject.data;
 
 public class Event<T> {
     private T content;

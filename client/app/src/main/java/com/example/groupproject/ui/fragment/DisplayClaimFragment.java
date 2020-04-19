@@ -24,6 +24,8 @@ import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.ClaimUtil;
 import com.example.groupproject.data.util.ImageUtil;
 import com.example.groupproject.data.util.MapUtil;
+import com.example.groupproject.data.util.PermissionUtil;
+import com.example.groupproject.data.util.TransitionUtil;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -114,35 +116,17 @@ public class DisplayClaimFragment extends DaggerFragment
     }
 
     private void requestPermissions(Runnable callback) {
-        Dexter.withContext(getContext())
-                .withPermissions(
+        PermissionUtil.requestPermissions(
+                getContext(),
+                new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                            callback.run();
-                        }
-                        if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied()) {
-                            Log.d(TAG, "onPermissionsChecked: isAnyPermissionPermanentlyDenied?");
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list,
-                                                                   PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                })
-                .withErrorListener(error -> {
-                    Log.d(TAG, "requestPermissions: Failed to request permissions");
+                },
+                callback,
+                dexterError -> {
                     toPreviousFragment();
-                })
-                .onSameThread()
-                .check();
+                });
     }
 
     private void initMapFragment() {
@@ -170,11 +154,7 @@ public class DisplayClaimFragment extends DaggerFragment
     private void toUpdateClaimFragment() {
         Bundle bundle = ClaimUtil.createBundleFromClaim(this.claim);
         UpdateClaimFragment updateClaimFragment = createDisplayClaimFragment(bundle);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment_container, updateClaimFragment)
-                .addToBackStack(TAG)
-                .commit();
+        TransitionUtil.toNextFragment(getActivity(), TAG, updateClaimFragment);
 
     }
 

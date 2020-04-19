@@ -18,10 +18,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.Resource;
+import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.MapUtil;
-import com.example.groupproject.ui.result.Result;
+import com.example.groupproject.data.Result;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;

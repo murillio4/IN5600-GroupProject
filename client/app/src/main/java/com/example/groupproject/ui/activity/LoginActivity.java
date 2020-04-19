@@ -1,7 +1,5 @@
 package com.example.groupproject.ui.activity;
 
-import android.app.Activity;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,7 +8,6 @@ import androidx.annotation.StringRes;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groupproject.R;
-import com.example.groupproject.ui.view.LoggedInUserView;
 import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 
@@ -133,8 +129,8 @@ public class LoginActivity extends DaggerAppCompatActivity
         finish();
     }
 
-    private void showLoginSuccess(@NonNull LoggedInUserView loggedInUserView) {
-        String welcome = getString(R.string.welcome) + loggedInUserView.getDisplayName();
+    private void showLoginSuccess(@NonNull String displayName) {
+        String welcome = getString(R.string.welcome) + displayName;
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 

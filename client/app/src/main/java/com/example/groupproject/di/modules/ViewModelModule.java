@@ -4,15 +4,13 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.groupproject.di.ViewModelKey;
-import com.example.groupproject.ui.factory.ViewModelFactory;
+import com.example.groupproject.di.ViewModelFactory;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
-
-import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;

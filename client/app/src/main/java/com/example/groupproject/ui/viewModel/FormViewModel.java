@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.groupproject.R;
-import com.example.groupproject.ui.state.State;
+import com.example.groupproject.data.State;
 
 import javax.inject.Inject;
 

@@ -33,30 +33,30 @@
   },
   {
     "id": "1",
-    "numberOfClaims": "0",
+    "numberOfClaims": "1",
     "claimId": [
-      "na",
+      "0",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimDes": [
-      "na",
+      "Henning Parrat Tandberg ble sur da jeg foreslo å bytte til fab istedenfor en retard knapp som så ut som en dass fra helvete",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimPhoto": [
-      "na",
+      "content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F40/ORIGINAL/NONE/1856619519",
       "na",
       "na",
       "na",
       "na"
     ],
     "claimLocation": [
-      "na",
+      "59.945933,10.829308",
       "na",
       "na",
       "na",

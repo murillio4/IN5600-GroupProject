@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.factory;
+package com.example.groupproject.di;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

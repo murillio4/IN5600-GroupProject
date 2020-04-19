@@ -1,4 +1,4 @@
-package com.example.groupproject.ui.result;
+package com.example.groupproject.data;
 
 import androidx.annotation.Nullable;
 

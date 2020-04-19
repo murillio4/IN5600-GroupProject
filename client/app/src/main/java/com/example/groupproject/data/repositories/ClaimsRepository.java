@@ -3,8 +3,8 @@ package com.example.groupproject.data.repositories;
 import androidx.annotation.NonNull;
 
 import com.example.groupproject.data.Constants;
-import com.example.groupproject.data.NetworkBoundResource;
-import com.example.groupproject.data.Resource;
+import com.example.groupproject.data.network.model.NetworkBoundResource;
+import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.data.model.Claims;

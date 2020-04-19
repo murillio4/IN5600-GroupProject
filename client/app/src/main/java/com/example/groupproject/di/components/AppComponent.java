@@ -9,15 +9,11 @@ import com.example.groupproject.di.modules.NetworkModule;
 import com.example.groupproject.di.modules.RepositoryModule;
 import com.example.groupproject.di.modules.SourceModule;
 import com.example.groupproject.di.modules.ViewModelModule;
-import com.example.groupproject.ui.factory.ViewModelFactory;
-
-import java.lang.annotation.Retention;
 
 import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 

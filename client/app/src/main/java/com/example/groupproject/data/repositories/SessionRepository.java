@@ -4,8 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.groupproject.data.NetworkBoundResource;
-import com.example.groupproject.data.Resource;
+import com.example.groupproject.data.network.model.NetworkBoundResource;
+import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.sources.local.SessionLocalDataSource;
 import com.example.groupproject.data.sources.remote.SessionRemoteDataSource;
 import com.example.groupproject.data.model.Person;
