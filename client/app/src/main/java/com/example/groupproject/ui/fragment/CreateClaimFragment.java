@@ -20,8 +20,10 @@ import androidx.lifecycle.Observer;
 import com.example.groupproject.R;
 import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.model.Claim;
+import com.example.groupproject.data.util.ClaimUtil;
 import com.example.groupproject.data.util.MapUtil;
 import com.example.groupproject.data.Result;
+import com.example.groupproject.data.util.TransitionUtil;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
@@ -165,81 +167,37 @@ public class CreateClaimFragment extends DaggerFragment
     }
 
     protected void postClaim() {
-        claimsViewModel.createClaim(claim)
-                .observe(Objects.requireNonNull(getActivity()), buildResultObserver());
-    }
-
-    Observer<? super Resource<String>> buildResultObserver() {
-        return (Observer<Resource<String>>) resource -> {
-            switch (resource.getStatus()) {
-                case LOADING:
-                    Log.d(TAG, "onCreate: Loading resource");
-                    break;
-                case ERROR:
-                    Log.d(TAG, "onCreate: Failed to create claim");
-                    break;
-                case SUCCESS:
-                    Log.d(TAG, "onCreate: Successfully posted claim");
-                    toPreviousFragment();
-                    break;
-                default:
-                    Log.d(TAG, "onCreate: Unknown result");
-                    break;
+        claimsViewModel.createClaim(claim).observe(getActivity(), createClaimResult -> {
+            if (createClaimResult == null) {
+                return;
             }
-        };
-    }
 
-    private void toPreviousFragment() {
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+            if (createClaimResult.getError() != null) {
+                Log.d(TAG, "onViewCreated: Failed to create claim" + claim.getId());
+            } else if (createClaimResult.getSuccess() != null) {
+                TransitionUtil.toPreviousFragment(getActivity());
+            }
+        });
     }
 
     private void handleAddMapLocationButton() {
-        Toast.makeText(getActivity(), "Add Map Location", Toast.LENGTH_SHORT).show();
-        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         new LocationPickerDialogFragment(
                 MapUtil.locationStringToLatLng(claim.getLocation())).showNow(fm);
     }
 
     private void handleAddPhotoButton() {
-        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         new PhotoDialogFragment().showNow(fm);
     }
 
     private void handleSubmitButton() {
-        if (claim == null || !verifyClaim()) {
-            Log.d(TAG, "handleSubmitButton: Failed to build claim");
+        if (!ClaimUtil.verifyClaim(claim)) {
+            Log.d(TAG, "handleSubmitButton: Claim is missing fields");
             Toast.makeText(context, "Failed to post claim", Toast.LENGTH_SHORT).show();
             return;
         }
 
         postClaim();
-    }
-
-    private boolean verifyClaim() {
-        if (claim.getId() == null) {
-            Log.d(TAG, "buildClaim: Failed to get next claim id");
-            Toast.makeText(context, "Faild to get next claim id", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (claim.getDescription().length() == 0) {
-            Log.d(TAG, "buildClaim: Claim has no description");
-            Toast.makeText(context, "Claim has no description", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (claim.getLocation() == null) {
-            Log.d(TAG, "buildClaim: Location not selected");
-            Toast.makeText(context, "Location not selected", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        if (claim.getPhotoPath() == null) {
-            Log.d(TAG, "buildClaim: No photo selected");
-            Toast.makeText(context, "No photo selected", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
     }
 }

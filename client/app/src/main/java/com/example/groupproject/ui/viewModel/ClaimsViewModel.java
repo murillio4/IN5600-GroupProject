@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.groupproject.R;
+import com.example.groupproject.data.Result;
+import com.example.groupproject.data.model.Person;
 import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.network.model.Status;
 import com.example.groupproject.data.model.Claim;
@@ -18,9 +21,9 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class ClaimsViewModel extends ViewModel {
 
-    private MutableLiveData<Resource<ClaimList>> claimsResult = new MutableLiveData<>();
-    private MutableLiveData<Resource<String>> createClaimResult = new MutableLiveData<>();
-    private MutableLiveData<Resource<String>> updateClaimResult = new MutableLiveData<>();
+    private MutableLiveData<Result<ClaimList>> claimsResult = new MutableLiveData<>();
+    private MutableLiveData<Result<String>> createClaimResult = new MutableLiveData<>();
+    private MutableLiveData<Result<String>> updateClaimResult = new MutableLiveData<>();
 
     private ClaimsRepository claimsRepository;
     private SessionRepository sessionRepository;
@@ -39,19 +42,19 @@ public class ClaimsViewModel extends ViewModel {
         return claimsRepository.getNextClaimId();
     }
 
-    public LiveData<Resource<ClaimList>> getClaims() {
+    public LiveData<Result<ClaimList>> getClaims() {
         String id = sessionRepository.getSession().getId();
         claimsRepository.getClaims(id).subscribe(buildGetClaimsDisposableObserver());
         return claimsResult;
     }
 
-    public LiveData<Resource<String>> createClaim(Claim claim) {
+    public LiveData<Result<String>> createClaim(Claim claim) {
         String userId = sessionRepository.getSession().getId();
         claimsRepository.createClaim(userId, claim).subscribe(buildCrateClaimDisposableObserver());
         return createClaimResult;
     }
 
-    public LiveData<Resource<String>> updateClaim(Claim claim) {
+    public LiveData<Result<String>> updateClaim(Claim claim) {
         String userId = sessionRepository.getSession().getId();
         claimsRepository.updateClaim(userId, claim).subscribe(buildUpdateClaimDisposableObserver());
         return updateClaimResult;
@@ -61,9 +64,21 @@ public class ClaimsViewModel extends ViewModel {
        return new DisposableObserver<Resource<String>>() {
            @Override
            public void onNext(@NonNull Resource<String> stringResource) {
-               createClaimResult.setValue(stringResource);
-               if (stringResource.getStatus() != Status.LOADING) {
-                   dispose();
+               switch (stringResource.getStatus()) {
+                   case LOADING:
+                       break;
+                   case ERROR:
+                       createClaimResult.setValue(Result.error(R.string.create_claim_failed));
+                       dispose();
+                       break;
+                   case SUCCESS:
+                       if (stringResource.getData() == null) {
+                           createClaimResult.setValue(Result.error(R.string.create_claim_failed));
+                       } else {
+                           createClaimResult.setValue(Result.success(stringResource.getData()));
+                       }
+                       dispose();
+                       break;
                }
            }
 
@@ -79,9 +94,21 @@ public class ClaimsViewModel extends ViewModel {
         return new DisposableObserver<Resource<String>>() {
             @Override
             public void onNext(@NonNull Resource<String> stringResource) {
-                updateClaimResult.setValue(stringResource);
-                if (stringResource.getStatus() != Status.LOADING) {
-                    dispose();
+                switch (stringResource.getStatus()) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        updateClaimResult.setValue(Result.error(R.string.update_claim_failed));
+                        dispose();
+                        break;
+                    case SUCCESS:
+                        if (stringResource.getData() == null) {
+                            updateClaimResult.setValue(Result.error(R.string.update_claim_failed));
+                        } else {
+                            updateClaimResult.setValue(Result.success(stringResource.getData()));
+                        }
+                        dispose();
+                        break;
                 }
             }
 
@@ -97,9 +124,21 @@ public class ClaimsViewModel extends ViewModel {
         return new DisposableObserver<Resource<ClaimList>>() {
             @Override
             public void onNext(@NonNull Resource<ClaimList> claimsResource) {
-                claimsResult.setValue(claimsResource);
-                if (claimsResource.getStatus() != Status.LOADING) {
-                    dispose();
+                switch (claimsResource.getStatus()) {
+                    case LOADING:
+                        break;
+                    case ERROR:
+                        claimsResult.setValue(Result.error(R.string.get_claims_failed));
+                        dispose();
+                        break;
+                    case SUCCESS:
+                        if (claimsResource.getData() == null) {
+                            claimsResult.setValue(Result.error(R.string.get_claims_failed));
+                        } else {
+                            claimsResult.setValue(Result.success(claimsResource.getData()));
+                        }
+                        dispose();
+                        break;
                 }
             }
 

@@ -9,12 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.data.model.Person;
+import com.example.groupproject.data.util.PermissionUtil;
+import com.example.groupproject.data.util.TransitionUtil;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
@@ -52,57 +55,35 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchClaimsForPersonWithId();
+
+        claimsViewModel.getClaims().observe(getActivity(), claimListResult -> {
+            if (claimListResult == null) {
+                return;
+            }
+
+            if (claimListResult.getError() != null) {
+                Log.d(TAG, "onViewCreated: Failed to fetch claims");
+            } else if (claimListResult.getSuccess() != null) {
+                requestPermissions(() -> initClaimListRecyclerView(claimListResult.getSuccess()));
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.claim_list_create_claim_new_button:
-                startCreateClaimFragment();
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.claim_list_create_claim_new_button) {
+            TransitionUtil.toNextFragment(getActivity(), TAG, new CreateClaimFragment());
         }
     }
 
     private void requestPermissions(Runnable callback) {
-        Dexter.withContext(getContext())
-                .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                            callback.run();
-                        }
-                        if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied()) {
-                            Log.d(TAG, "onPermissionsChecked: isAnyPermissionPermanentlyDenied?");
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list,
-                                                                   PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                })
-                .withErrorListener(error -> {
-                    Log.d(TAG, "requestPermissions: Failed to request permissions");
-                })
-                .onSameThread()
-                .check();
-    }
-
-    private void startCreateClaimFragment() {
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment_container, new CreateClaimFragment())
-                .addToBackStack(TAG)
-                .commit();
+        PermissionUtil.requestPermissions(
+                getContext(),
+                new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE },
+                callback,
+                dexterError -> Log.d(TAG, "requestPermissions: Failed to request permissions"));
     }
 
     private void initClaimListRecyclerView(ClaimList claimList) {
@@ -110,26 +91,6 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
         recyclerView.setAdapter(new ClaimListRecyclerViewAdapter(getActivity(), claimList));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
-    }
-
-    private void fetchClaimsForPersonWithId() {
-        claimsViewModel.getClaims().observe(getActivity(), claimsResult -> {
-            switch (claimsResult.getStatus()) {
-                case LOADING:
-                    Log.d(TAG, "onCreate: Loading resource");
-                    break;
-                case ERROR:
-                    Log.d(TAG, "onCreate: Failed to fetch get claims");
-                    break;
-                case SUCCESS:
-                    Log.d(TAG, "onCreate: Successfully fetched claims");
-                    requestPermissions(() -> initClaimListRecyclerView(claimsResult.getData()));
-                    break;
-                default:
-                    Log.d(TAG, "onCreate: Unknown result");
-                    break;
-            }
-        });
     }
 
 }

@@ -51,13 +51,13 @@ public class DisplayClaimFragment extends DaggerFragment
 
     private static final String TAG = "DisplayClaimActivity";
 
+    private Claim claim;
+
     @Inject
     ClaimsViewModel claimsViewModel;
 
     @Inject
     Context context;
-
-    private Claim claim;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +75,7 @@ public class DisplayClaimFragment extends DaggerFragment
         super.onViewCreated(view, savedInstanceState);
 
         if ((this.claim = ClaimUtil.getClaimFromBundle(getArguments())) == null) {
-            toPreviousFragment();
+            TransitionUtil.toPreviousFragment(getActivity());
         }
 
         ((TextView)view.findViewById(R.id.display_claim_id)).setText("Claim #" + claim.getId());
@@ -124,9 +124,7 @@ public class DisplayClaimFragment extends DaggerFragment
                         Manifest.permission.READ_EXTERNAL_STORAGE
                 },
                 callback,
-                dexterError -> {
-                    toPreviousFragment();
-                });
+                dexterError -> TransitionUtil.toPreviousFragment(getActivity()));
     }
 
     private void initMapFragment() {
@@ -134,7 +132,7 @@ public class DisplayClaimFragment extends DaggerFragment
                                             .findFragmentById(R.id.display_claim_map_fragment);
 
         if (mapFragment == null) {
-            toPreviousFragment();
+            TransitionUtil.toPreviousFragment(getActivity());
         } else {
             mapFragment.getMapAsync(this);
         }
@@ -147,15 +145,11 @@ public class DisplayClaimFragment extends DaggerFragment
         }
     }
 
-    private void toPreviousFragment() {
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
-    }
-
     private void toUpdateClaimFragment() {
         Bundle bundle = ClaimUtil.createBundleFromClaim(this.claim);
-        UpdateClaimFragment updateClaimFragment = createDisplayClaimFragment(bundle);
+        UpdateClaimFragment updateClaimFragment = new UpdateClaimFragment();
+        updateClaimFragment.setArguments(bundle);
         TransitionUtil.toNextFragment(getActivity(), TAG, updateClaimFragment);
-
     }
 
     private void startViewImageActivity() {
@@ -163,11 +157,5 @@ public class DisplayClaimFragment extends DaggerFragment
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.parse(claim.getPhotoPath()), "image/*");
         startActivity(intent);
-    }
-
-    private UpdateClaimFragment createDisplayClaimFragment(Bundle extras) {
-        UpdateClaimFragment updateClaimFragment = new UpdateClaimFragment();
-        updateClaimFragment.setArguments(extras);
-        return updateClaimFragment;
     }
 }

@@ -83,7 +83,6 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     private static final int DEFAULT_BEARING = 0;
     private static final int DEFAULT_ZOOM = 15;
 
-
     private List<AutocompletePrediction> predictionList = null;
     private SupportMapFragment supportMapFragment = null;
     private MaterialSearchBar materialSearchBar = null;

@@ -7,15 +7,22 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_out">Sign out</string>
     <string name="welcome">"Welcome "</string>
-    <string name="invalid_description">Not a valid description</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be > 3 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="close_dropdown_menu">Close</string>
 
     <string name="title_main_activity">ASS Insurance</string>
+
+    <!-- Form Input Messages -->
+    <string name="invalid_description">Not a valid description</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be > 3 characters</string>
+
+    <!-- Fetch Errors -->
+    <string name="login_failed">"Login failed"</string>
+    <string name="get_claims_failed">Get claims failed</string>
+    <string name="create_claim_failed">Create claim failed</string>
+    <string name="update_claim_failed">Update claim failed</string>
 
     <!--Claim List-->
     <string name="claim_list_title">Your Claims</string>
