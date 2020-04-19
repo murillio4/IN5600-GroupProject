@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.groupproject.R;
 import com.example.groupproject.data.util.MapUtil;
 import com.example.groupproject.data.util.PermissionUtil;
+import com.example.groupproject.ui.abstraction.TaggedDialogFragment;
 import com.example.groupproject.ui.adapter.LocationSuggestionsAdapter;
 import com.example.groupproject.data.Result;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
@@ -52,11 +53,6 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
@@ -72,16 +68,15 @@ import dagger.android.support.DaggerDialogFragment;
 import static android.app.Activity.RESULT_OK;
 
 public class LocationPickerDialogFragment extends DaggerDialogFragment
-        implements OnMapReadyCallback, View.OnClickListener,
+        implements TaggedDialogFragment, View.OnClickListener,
         MaterialSearchBar.OnSearchActionListener, TextWatcher,
         SuggestionsAdapter.OnItemViewClickListener,
+        GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMapClickListener,
-        GoogleMap.OnMyLocationButtonClickListener {
+        OnMapReadyCallback {
 
     private static final String TAG = "LocationPickerDialogFra";
     private static final int USE_LOCATION_REQUEST = 51;
-    private static final int DEFAULT_BEARING = 0;
-    private static final int DEFAULT_ZOOM = 15;
 
     private List<AutocompletePrediction> predictionList = null;
     private SupportMapFragment supportMapFragment = null;

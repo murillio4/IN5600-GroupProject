@@ -15,8 +15,6 @@ import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.TransitionUtil;
 
-import java.util.Objects;
-
 public class UpdateClaimFragment extends CreateClaimFragment {
 
     private static final String TAG = "UpdateClaimFragment";
@@ -36,7 +34,7 @@ public class UpdateClaimFragment extends CreateClaimFragment {
         descriptionEditText.setText(claim.getDescription());
 
         TextView textView = view.findViewById(R.id.create_claim_title);
-        textView.setText("Update claim " + claim.getId());
+        textView.setText(getString(R.string.update_claim_title, claim.getId()));
     }
 
     @Override

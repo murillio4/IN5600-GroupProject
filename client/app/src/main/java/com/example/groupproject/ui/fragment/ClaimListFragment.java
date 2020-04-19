@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,19 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.ClaimList;
-import com.example.groupproject.data.model.Person;
 import com.example.groupproject.data.util.PermissionUtil;
 import com.example.groupproject.data.util.TransitionUtil;
 import com.example.groupproject.ui.adapter.ClaimListRecyclerViewAdapter;
 import com.example.groupproject.ui.viewModel.ClaimsViewModel;
 import com.example.groupproject.ui.viewModel.LoginViewModel;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,7 +26,7 @@ import dagger.android.support.DaggerFragment;
 
 public class ClaimListFragment extends DaggerFragment implements View.OnClickListener {
 
-    private static final String TAG = "ClaimListFragment";
+    public static final String TAG = "ClaimListFragment";
 
     @Inject
     ClaimsViewModel claimsViewModel;

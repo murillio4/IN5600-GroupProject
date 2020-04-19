@@ -1,6 +1,5 @@
 package com.example.groupproject.ui.adapter;
 
-import android.bluetooth.le.ScanCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,13 @@ import com.example.groupproject.R;
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 public class LocationSuggestionsAdapter extends SuggestionsAdapter<String, LocationSuggestionsAdapter.SuggestionHolder> {
-    private SuggestionsAdapter.OnItemViewClickListener listener;
+    private OnItemViewClickListener listener;
 
     public LocationSuggestionsAdapter(LayoutInflater inflater) {
         super(inflater);
     }
 
-    public void setListener(SuggestionsAdapter.OnItemViewClickListener listener) {
+    public void setListener(OnItemViewClickListener listener) {
         this.listener = listener;
     }
 
@@ -31,20 +30,14 @@ public class LocationSuggestionsAdapter extends SuggestionsAdapter<String, Locat
 
     @NonNull
     @Override
-    public LocationSuggestionsAdapter.SuggestionHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SuggestionHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = getLayoutInflater().inflate(R.layout.location_suggestion, parent, false);
         return new LocationSuggestionsAdapter.SuggestionHolder(view);
     }
 
     @Override
-    public void onBindSuggestionHolder(String suggestion, LocationSuggestionsAdapter.SuggestionHolder holder, int position) {
+    public void onBindSuggestionHolder(String suggestion, SuggestionHolder holder, int position) {
         holder.text.setText(getSuggestions().get(position));
-    }
-
-    public interface OnItemViewClickListener {
-        void OnItemClickListener(int position, View v);
-
-        void OnItemDeleteListener(int position, View v);
     }
 
     class SuggestionHolder extends RecyclerView.ViewHolder {

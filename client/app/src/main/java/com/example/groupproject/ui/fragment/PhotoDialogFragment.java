@@ -20,15 +20,10 @@ import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.util.ImageUtil;
 import com.example.groupproject.data.Result;
 import com.example.groupproject.data.util.PermissionUtil;
+import com.example.groupproject.ui.abstraction.TaggedDialogFragment;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,7 +31,8 @@ import dagger.android.support.DaggerAppCompatDialogFragment;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
-public class PhotoDialogFragment extends DaggerAppCompatDialogFragment implements View.OnClickListener {
+public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
+        implements TaggedDialogFragment, View.OnClickListener {
 
     private static final String TAG = "PhotoDialogFragment";
 

@@ -8,6 +8,7 @@ import com.example.groupproject.data.model.Person;
 import com.google.gson.Gson;
 
 public class SessionLocalDataSource {
+
     private Gson gson;
     private SharedPreferences sharedPreferences;
 

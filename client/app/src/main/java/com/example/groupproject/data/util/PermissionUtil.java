@@ -21,6 +21,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.List;
 
 public class PermissionUtil {
+
     private static final String TAG = "PermissionUtil";
 
     public static void requestPermissions(Context context, @NonNull String[] permissions,

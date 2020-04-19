@@ -17,11 +17,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/claim_list_item_text"
-        android:layout_toRightOf="@id/claim_list_item_image"
-        android:text="Dummy Text"
+        android:layout_toEndOf="@id/claim_list_item_image"
         android:textColor="#000"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="30dp"
         android:textSize="18sp"/>
         
 </RelativeLayout>

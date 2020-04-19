@@ -15,10 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 
 import com.example.groupproject.R;
-import com.example.groupproject.data.network.model.Resource;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.ClaimUtil;
 import com.example.groupproject.data.util.MapUtil;
@@ -29,8 +27,6 @@ import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -82,53 +78,12 @@ public class CreateClaimFragment extends DaggerFragment
         claim = initClaim();
         if (claim == null) {
             Log.d(TAG, "onCreate: Fail to create initial claim");
+            TransitionUtil.toPreviousFragment(getActivity());
         }
 
-        photoViewModel.getPhotoResult().observe(getViewLifecycleOwner(), photoResult -> {
-            if (photoResult.getHasBeenHandled()) {
-                return;
-            }
-
-            Result<Uri> result = photoResult.getContentIfNotHandled();
-
-            if (result.getSuccess() != null) {
-                claim.setPhotoPath(result.getSuccess().toString());
-                Log.d(TAG, "onCreate: PhotoResult: " + result.getSuccess());
-            }
-
-            if (result.getError() != null) {
-                Log.d(TAG, "onCreate: PhotoResult: " + result.getError());
-            }
-        });
-
-        locationViewModel.getLocationResult().observe(getViewLifecycleOwner(), locationResult -> {
-            if (locationResult.getHasBeenHandled()) {
-                return;
-            }
-
-            Result<LatLng> result = locationResult.getContentIfNotHandled();
-
-            if (result.getSuccess() != null) {
-                claim.setLocation(MapUtil.latLngToLocationString(result.getSuccess()));
-                Log.d(TAG, "onCreate: LocationResult: " + result.getSuccess());
-            }
-
-            if (result.getError() != null) {
-                Log.d(TAG, "onCreate: LocationResult: " + result.getError());
-            }
-        });
-
-        formViewModel.getDescriptionState().observe(getViewLifecycleOwner(), descriptionState -> {
-            if (descriptionState == null) {
-                return;
-            }
-
-            descriptionEditText.setEnabled(descriptionState.isDataValid());
-            claim.setDescription(descriptionEditText.getText().toString());
-            if (descriptionState.getData() != null) {
-                descriptionEditText.setError(getString(descriptionState.getData()));
-            }
-        });
+        initPhotoObserver();
+        initLocationObserver();
+        initDescriptionObserver();
     }
 
     @Override
@@ -181,14 +136,13 @@ public class CreateClaimFragment extends DaggerFragment
     }
 
     private void handleAddMapLocationButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        new LocationPickerDialogFragment(
-                MapUtil.locationStringToLatLng(claim.getLocation())).showNow(fm);
+        TransitionUtil.openDialog(getActivity(),
+                new LocationPickerDialogFragment(
+                        MapUtil.locationStringToLatLng(claim.getLocation())));
     }
 
     private void handleAddPhotoButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        new PhotoDialogFragment().showNow(fm);
+        TransitionUtil.openDialog(getActivity(), new PhotoDialogFragment());
     }
 
     private void handleSubmitButton() {
@@ -199,5 +153,57 @@ public class CreateClaimFragment extends DaggerFragment
         }
 
         postClaim();
+    }
+
+    private void initPhotoObserver() {
+        photoViewModel.getPhotoResult().observe(getViewLifecycleOwner(), photoResult -> {
+            if (photoResult.getHasBeenHandled()) {
+                return;
+            }
+
+            Result<Uri> result = photoResult.getContentIfNotHandled();
+
+            if (result.getSuccess() != null) {
+                claim.setPhotoPath(result.getSuccess().toString());
+                Log.d(TAG, "onCreate: PhotoResult: " + result.getSuccess());
+            }
+
+            if (result.getError() != null) {
+                Log.d(TAG, "onCreate: PhotoResult: " + result.getError());
+            }
+        });
+    }
+
+    private void initLocationObserver() {
+        locationViewModel.getLocationResult().observe(getViewLifecycleOwner(), locationResult -> {
+            if (locationResult.getHasBeenHandled()) {
+                return;
+            }
+
+            Result<LatLng> result = locationResult.getContentIfNotHandled();
+
+            if (result.getSuccess() != null) {
+                claim.setLocation(MapUtil.latLngToLocationString(result.getSuccess()));
+                Log.d(TAG, "onCreate: LocationResult: " + result.getSuccess());
+            }
+
+            if (result.getError() != null) {
+                Log.d(TAG, "onCreate: LocationResult: " + result.getError());
+            }
+        });
+    }
+
+    private void initDescriptionObserver() {
+        formViewModel.getDescriptionState().observe(getViewLifecycleOwner(), descriptionState -> {
+            if (descriptionState == null) {
+                return;
+            }
+
+            descriptionEditText.setEnabled(descriptionState.isDataValid());
+            claim.setDescription(descriptionEditText.getText().toString());
+            if (descriptionState.getData() != null) {
+                descriptionEditText.setError(getString(descriptionState.getData()));
+            }
+        });
     }
 }

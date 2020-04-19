@@ -1,27 +1,24 @@
 package com.example.groupproject.ui.adapter;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.groupproject.R;
 import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.model.ClaimList;
+import com.example.groupproject.data.util.TransitionUtil;
+import com.example.groupproject.ui.fragment.ClaimListFragment;
 import com.example.groupproject.ui.fragment.DisplayClaimFragment;
 
 public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimListItemViewHolder> {
 
-    private static final String TAG = "RecyclerViewAdapter";
+    private static final String TAG = "ClaimListRecyclerViewAdapter";
 
     private FragmentActivity context;
     private ClaimList claimList;
@@ -53,12 +50,8 @@ public class ClaimListRecyclerViewAdapter extends RecyclerView.Adapter<ClaimList
     }
 
     private void startDisplayClaimFragment(Claim claim) {
-        context.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment_container,
-                        createDisplayClaimFragment(createBundleFromClaim(claim)))
-                .addToBackStack(null)
-                .commit();
+        TransitionUtil.toNextFragment(context, ClaimListFragment.TAG,
+                createDisplayClaimFragment(createBundleFromClaim(claim)));
     }
 
     private Bundle createBundleFromClaim(Claim claim) {

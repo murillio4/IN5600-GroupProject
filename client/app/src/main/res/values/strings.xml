@@ -27,7 +27,12 @@
     <!--Claim List-->
     <string name="claim_list_title">Your Claims</string>
 
+    <!--Display Claim-->
+    <string name="display_claim_view_photo">View Photo</string>
+    <string name="display_claim_edit_btn">Edit</string>
+
     <!--Create/Update Claim-->
+    <string name="update_claim_title">Update claim %1$s</string>
     <string name="create_claim_title">Create claim</string>
     <string name="claim_description">Description</string>
     <string name="claim_add_photo">Add Photo</string>

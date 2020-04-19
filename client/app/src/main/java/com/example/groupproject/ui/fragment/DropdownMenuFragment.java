@@ -1,15 +1,10 @@
 package com.example.groupproject.ui.fragment;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
@@ -17,13 +12,16 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.Person;
+import com.example.groupproject.ui.abstraction.TaggedDialogFragment;
 import com.example.groupproject.ui.viewModel.SessionViewModel;
 
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatDialogFragment;
 
-public class DropdownMenuFragment extends DaggerAppCompatDialogFragment implements View.OnClickListener {
+public class DropdownMenuFragment extends DaggerAppCompatDialogFragment
+        implements TaggedDialogFragment, View.OnClickListener {
+
     private static final String TAG = "DropdownMenuFragment";
 
     @Inject

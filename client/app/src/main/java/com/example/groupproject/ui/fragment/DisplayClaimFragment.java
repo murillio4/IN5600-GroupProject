@@ -112,7 +112,6 @@ public class DisplayClaimFragment extends DaggerFragment
             default:
                 break;
         }
-
     }
 
     private void requestPermissions(Runnable callback) {
