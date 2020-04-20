@@ -32,9 +32,6 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     ClaimsViewModel claimsViewModel;
 
     @Inject
-    LoginViewModel loginViewModel;
-
-    @Inject
     Context context;
 
     @Override

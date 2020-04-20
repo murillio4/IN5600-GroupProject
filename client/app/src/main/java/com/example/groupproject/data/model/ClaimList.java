@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.IntStream;
+import java.io.Serializable;
 
 /**
  * Structure of Claims(s) when stored and used by client.
  */
-public class ClaimList extends BaseModel {
+public class ClaimList implements Serializable {
 
     @SerializedName("id")
     private String id;
@@ -26,10 +26,6 @@ public class ClaimList extends BaseModel {
         this.id = id;
         this.numberOfClaims = numberOfClaims;
         this.claims = claims;
-    }
-
-    public String getKey() {
-        return Constants.SharedPreferences.Keys.ClaimList;
     }
 
     public String getId() {
