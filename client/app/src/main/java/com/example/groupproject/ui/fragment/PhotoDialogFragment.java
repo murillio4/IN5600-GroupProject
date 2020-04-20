@@ -36,13 +36,13 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
 
     private static final String TAG = "PhotoDialogFragment";
 
+    private Uri imageUri = null;
+
     @Inject
     PhotoViewModel photoViewModel;
 
     @Inject
     Context context;
-
-    private Uri imageUri = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,9 +100,9 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == Constants.REQUEST_CODE.CAMERA.ordinal()) {
+            if (requestCode == Constants.RequestCode.CAMERA.ordinal()) {
                 handleImageCaptureActivityResult(data);
-            } else if (requestCode == Constants.REQUEST_CODE.GALLERY.ordinal()) {
+            } else if (requestCode == Constants.RequestCode.GALLERY.ordinal()) {
                 handleGalleryActivityResult(data);
             }
         }
@@ -121,7 +121,7 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
                         context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
                 if (imageUri != null) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent, Constants.REQUEST_CODE.CAMERA.ordinal());
+                    startActivityForResult(intent, Constants.RequestCode.CAMERA.ordinal());
                 }
             }
             dismiss();
@@ -135,7 +135,7 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
-            startActivityForResult(intent, Constants.REQUEST_CODE.GALLERY.ordinal());
+            startActivityForResult(intent, Constants.RequestCode.GALLERY.ordinal());
         }
     }
 
