@@ -7,12 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groupproject.R;
+import com.example.groupproject.data.Constants;
 import com.example.groupproject.data.model.ClaimList;
 import com.example.groupproject.data.util.PermissionUtil;
 import com.example.groupproject.data.util.TransitionUtil;
@@ -34,6 +36,8 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     @Inject
     Context context;
 
+    ClaimList claimList = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
             if (claimListResult.getError() != null) {
                 Log.d(TAG, "onViewCreated: Failed to fetch claims");
             } else if (claimListResult.getSuccess() != null) {
+                claimList = claimListResult.getSuccess();
                 requestPermissions(() -> initClaimListRecyclerView(claimListResult.getSuccess()));
             }
         });
@@ -62,7 +67,13 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.claim_list_create_claim_new_button) {
-            TransitionUtil.toNextFragment(getActivity(), TAG, new CreateClaimFragment());
+            if (claimList == null) {
+                Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_SHORT).show();
+            } else if (claimList.getNumberOfClaims() == Constants.Claim.CLAIM_MAX_COUNT) {
+                Toast.makeText(context, R.string.claim_list_add_claim_max_error, Toast.LENGTH_SHORT).show();
+            } else {
+                TransitionUtil.toNextFragment(getActivity(), TAG, new CreateClaimFragment());
+            }
         }
     }
 

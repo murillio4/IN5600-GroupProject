@@ -105,8 +105,9 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
             } else if (requestCode == Constants.RequestCode.GALLERY.ordinal()) {
                 handleGalleryActivityResult(data);
             }
+
+            dismiss();
         }
-        dismiss();
     }
 
     private void startImageCaptureActivity() {
@@ -122,17 +123,17 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
                 if (imageUri != null) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, Constants.RequestCode.CAMERA.ordinal());
+                    return;
                 }
             }
-            dismiss();
-        } else {
-            Log.d(TAG, "startImageCaptureActivity: No packet manager available");
-            dismiss();
         }
+
+        Log.d(TAG, "startImageCaptureActivity: Unable to take picture");
+        dismiss();
     }
 
     private void startGalleryActivity() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             startActivityForResult(intent, Constants.RequestCode.GALLERY.ordinal());

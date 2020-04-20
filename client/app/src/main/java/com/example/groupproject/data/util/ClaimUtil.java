@@ -37,7 +37,7 @@ public class ClaimUtil {
             return true;
         }
 
-        if (claim.getDescription().length() == 0) {
+        if (claim.getDescription() == null || claim.getDescription().length() == 0) {
             Log.d(TAG, "buildClaim: Claim has no description");
             return true;
         }

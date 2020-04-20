@@ -26,6 +26,7 @@
 
     <!--Claim List-->
     <string name="claim_list_title">Your Claims</string>
+    <string name="claim_list_add_claim_max_error">Maximum number of claims reached</string>
 
     <!--Display Claim-->
     <string name="display_claim_view_photo">View Photo</string>
@@ -34,9 +35,12 @@
     <!--Create/Update Claim-->
     <string name="update_claim_title">Update claim %1$s</string>
     <string name="create_claim_title">Create claim</string>
+    <string name="claim_number">Claim #%1$s</string>
     <string name="claim_description">Description</string>
     <string name="claim_add_photo">Add Photo</string>
+    <string name="claim_added_photo">Photo Added</string>
     <string name="claim_add_map_location">Add Map Location</string>
+    <string name="claim_added_map_location">Map Location Added</string>
     <string name="claim_submit">Submit</string>
 
     <!--Photo Dialog-->
@@ -49,4 +53,8 @@
 
     <!--Location Dialog-->
     <string name="location_picker_dialog_btn">Select location</string>
+
+
+    <!--Misc-->
+    <string name="unexpected_error">Unexpected error</string>
 </resources>

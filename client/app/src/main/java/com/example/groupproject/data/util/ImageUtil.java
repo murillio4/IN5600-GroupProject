@@ -79,6 +79,10 @@ public class ImageUtil {
                     getImageFileName(),
                     ImageUtil.MIME_TYPE_SUFFIX,
                     context.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+
+            if (file.canWrite()) {
+                Log.i(TAG, "createImageFile: hehe");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,7 +120,7 @@ public class ImageUtil {
             if (parcelFileDescriptor != null) {
                 bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor());
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {

@@ -72,4 +72,8 @@ public class ClaimList implements Serializable {
             return null;
         }
     }
+
+    public Integer getNumberOfClaims() {
+        return claims.size();
+    }
 }

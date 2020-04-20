@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.ClaimUtil;
@@ -53,6 +54,8 @@ public class DisplayClaimFragment extends DaggerFragment
 
     private Claim claim;
 
+    private ImageView claimImage;
+
     @Inject
     ClaimsViewModel claimsViewModel;
 
@@ -67,6 +70,8 @@ public class DisplayClaimFragment extends DaggerFragment
         view.findViewById(R.id.display_claim_image_view).setOnClickListener(this);
         view.findViewById(R.id.display_claim_edit_button).setOnClickListener(this);
 
+        claimImage = view.findViewById(R.id.display_claim_image_view);
+
         return view;
     }
 
@@ -78,8 +83,10 @@ public class DisplayClaimFragment extends DaggerFragment
             TransitionUtil.toPreviousFragment(getActivity());
         }
 
-        ((TextView)view.findViewById(R.id.display_claim_id)).setText("Claim #" + claim.getId());
-        ((TextView)view.findViewById(R.id.display_claim_description)).setText(claim.getDescription());
+        ((TextView)view.findViewById(R.id.display_claim_id))
+                .setText(getString(R.string.claim_number, claim.getId()));
+        ((TextView)view.findViewById(R.id.display_claim_description))
+                .setText(claim.getDescription());
 
         requestPermissions(() -> {
             initMapFragment();
@@ -138,10 +145,12 @@ public class DisplayClaimFragment extends DaggerFragment
     }
 
     private void initImageView() {
-        Bitmap bitmap = ImageUtil.getBitmapFromUri(context, Uri.parse(claim.getPhotoPath()));
-        if (bitmap != null) {
-            ((ImageView)getView().findViewById(R.id.display_claim_image_view)).setImageBitmap(bitmap);
-        }
+        Glide.with(context)
+                .asBitmap()
+                .load(claim.getPhotoPath())
+                /*.placeholder(R.drawable.ic_launcher_background)*/
+                .error(R.drawable.ic_error_red_24dp)
+                .into(this.claimImage);
     }
 
     private void toUpdateClaimFragment() {

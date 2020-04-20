@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:layout_margin="20dp"
     tools:context=".ui.fragment.DisplayClaimFragment">
 
@@ -15,46 +16,53 @@
         android:textStyle="bold"
         android:gravity="center"
         android:textColor="#404140"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/display_claim_map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:padding="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginTop="10dp"
-        tools:context=".ui.fragment.DisplayClaimFragment"
-        app:layout_constraintTop_toBottomOf="@id/display_claim_id"/>
+        app:layout_constraintTop_toBottomOf="@+id/display_claim_id"
+        tools:context=".ui.fragment.DisplayClaimFragment"/>
 
-    <ImageView
-        android:id="@+id/display_claim_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="10dp"
-        android:scaleType="center"
-        app:layout_constraintTop_toBottomOf="@id/display_claim_map_fragment" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/display_claim_image_view_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/display_claim_map_fragment">
 
-    <TextView
-        android:id="@+id/display_claim_image_view_text"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/display_claim_view_photo"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textAllCaps="true"
-        android:textColor="#FFF"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/display_claim_map_fragment" />
+            <ImageView
+                android:id="@+id/display_claim_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="center"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/display_claim_image_view_text"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/display_claim_view_photo"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="#FFF"
+                android:gravity="center"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/display_claim_description_title"
@@ -62,28 +70,30 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/claim_description"
+        android:textColor="@color/primaryLightColor"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/primaryLightColor"
-        app:layout_constraintTop_toBottomOf="@id/display_claim_image_view" />
+        app:layout_constraintTop_toBottomOf="@id/display_claim_image_view_wrapper"/>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/display_claim_description_scroll"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        app:layout_constraintTop_toBottomOf="@id/display_claim_description_title"
-        app:layout_constraintBottom_toTopOf="@+id/display_claim_edit_button" >
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/display_claim_edit_button"
+        app:layout_constraintTop_toBottomOf="@+id/display_claim_description_title"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/display_claim_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:verticalScrollbarPosition="right"
             android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:scrollbars="vertical" />
-    </ScrollView>
+            android:scrollbars="vertical"
+            android:textSize="16sp"
+            android:verticalScrollbarPosition="right" />
+    </androidx.core.widget.NestedScrollView>
 
     <Button
         android:id="@+id/display_claim_edit_button"

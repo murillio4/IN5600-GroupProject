@@ -1,6 +1,7 @@
 package com.example.groupproject.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
@@ -27,6 +29,8 @@ import com.example.groupproject.ui.viewModel.FormViewModel;
 import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -165,10 +169,12 @@ public class CreateClaimFragment extends DaggerFragment
 
             if (result.getSuccess() != null) {
                 claim.setPhotoPath(result.getSuccess().toString());
+                Toast.makeText(context, R.string.claim_added_photo, Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onCreate: PhotoResult: " + result.getSuccess());
             }
 
             if (result.getError() != null) {
+                Toast.makeText(context, result.getError(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onCreate: PhotoResult: " + result.getError());
             }
         });
@@ -183,6 +189,7 @@ public class CreateClaimFragment extends DaggerFragment
             Result<LatLng> result = locationResult.getContentIfNotHandled();
 
             if (result.getSuccess() != null) {
+                Toast.makeText(context, R.string.claim_added_map_location, Toast.LENGTH_SHORT).show();
                 claim.setLocation(MapUtil.latLngToLocationString(result.getSuccess()));
                 Log.d(TAG, "onCreate: LocationResult: " + result.getSuccess());
             }
