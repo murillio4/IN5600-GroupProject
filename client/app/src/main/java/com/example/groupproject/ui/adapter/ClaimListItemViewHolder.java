@@ -40,15 +40,13 @@ public class ClaimListItemViewHolder extends RecyclerView.ViewHolder
     }
 
     public ClaimListItemViewHolder setListItemImage(@NonNull  Context context, String imagePath) {
-        RequestBuilder<Bitmap> requestBuilder = Glide.with(context).asBitmap().addListener(this);
-
-        if (ImageUtil.fileExists(context, Uri.parse(imagePath))) {
-            requestBuilder.load(imagePath);
-        } else {
-            requestBuilder.load(R.drawable.ic_launcher_background);
-        }
-
-        requestBuilder.error(R.drawable.ic_error_red_24dp).into(this.claimListItemImage);
+        Glide.with(context)
+                .asBitmap()
+                .addListener(this)
+                .load(imagePath)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_error_red_24dp)
+                .into(this.claimListItemImage);
 
         return this;
     }
