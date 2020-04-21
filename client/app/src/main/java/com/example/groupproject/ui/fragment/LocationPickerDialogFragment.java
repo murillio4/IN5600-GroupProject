@@ -176,8 +176,12 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
         if (marker != null) {
             try {
                 String address = getAddressFromLatLang(marker);
-                materialSearchBar.setPlaceHolder(address);
-                setMarker(marker, address);
+                if (address != null) {
+                    materialSearchBar.setPlaceHolder(address);
+                    setMarker(marker, address);
+                } else {
+                    setMarker(marker, marker.toString());
+                }
             } catch (IOException e) {
                 setMarker(marker, marker.toString());
             }
@@ -200,8 +204,12 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     public void onMapClick(LatLng latLng) {
         try {
             String address = getAddressFromLatLang(latLng);
-            materialSearchBar.setPlaceHolder(address);
-            setMarker(latLng, address);
+            if (address != null) {
+                materialSearchBar.setPlaceHolder(address);
+                setMarker(latLng, address);
+            } else {
+                setMarker(latLng, latLng.toString());
+            }
         } catch (IOException e) {
             setMarker(latLng, latLng.toString());
         }
@@ -421,10 +429,17 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     }
 
     private String getAddressFromLatLang(LatLng latLng) throws IOException {
-        Address address = geocoder.getFromLocation(
-                latLng.latitude,
-                latLng.longitude,
-                1).get(0);
-        return address.getAddressLine(0);
+
+        try {
+            Address address = geocoder.getFromLocation(
+                    latLng.latitude,
+                    latLng.longitude,
+                    1).get(0);
+            return address.getAddressLine(0);
+        } catch (IndexOutOfBoundsException e) {
+            Log.d(TAG, "getAddressFromLatLang: No address line for ("
+                    + latLng.latitude + "," + latLng.longitude);
+            return null;
+        }
     }
 }
