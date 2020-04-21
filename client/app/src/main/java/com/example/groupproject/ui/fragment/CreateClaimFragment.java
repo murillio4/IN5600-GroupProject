@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -66,6 +68,8 @@ public class CreateClaimFragment extends DaggerFragment
         View view = inflater.inflate(R.layout.fragment_create_claim, container, false);
 
         descriptionEditText = view.findViewById(R.id.create_claim_description_input);
+        descriptionEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        descriptionEditText.setRawInputType(InputType.TYPE_CLASS_TEXT);
         descriptionEditText.addTextChangedListener(this);
 
         view.findViewById(R.id.create_claim_add_map_location_button).setOnClickListener(this);
