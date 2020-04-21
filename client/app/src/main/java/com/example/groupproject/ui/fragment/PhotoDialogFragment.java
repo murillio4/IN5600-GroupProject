@@ -1,6 +1,7 @@
 package com.example.groupproject.ui.fragment;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,7 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 
@@ -45,9 +50,9 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
     Context context;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setStyle(STYLE_NO_TITLE, 0);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
