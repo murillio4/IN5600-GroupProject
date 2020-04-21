@@ -1,11 +1,13 @@
 package com.example.groupproject.data.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-public class Claim implements Serializable {
+public class Claim implements Serializable, Cloneable {
 
     @SerializedName("id")
     private String id;
@@ -61,5 +63,15 @@ public class Claim implements Serializable {
     public String toString() {
         return String.format(
                 Locale.getDefault(), "Claim(%s,%s,%s,%s)", id, description, photoPath, location);
+    }
+
+    @NonNull
+    @Override
+    public Claim clone() {
+        try {
+            return (Claim) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return new Claim(id, description, photoPath, location);
+        }
     }
 }

@@ -15,7 +15,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="#404140"
+        android:textColor="@color/primaryColor"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
@@ -59,7 +59,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textAllCaps="true"
-                android:textColor="#FFF"
+                android:textColor="@color/white"
                 android:gravity="center"
                 app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,9 +78,11 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/display_claim_description_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:fillViewport="true"
+        android:background="@color/gray"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/display_claim_edit_button"
         app:layout_constraintTop_toBottomOf="@+id/display_claim_description_title"
         app:layout_constraintVertical_bias="0.0">
@@ -90,9 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:scrollbars="vertical"
-            android:textSize="16sp"
-            android:verticalScrollbarPosition="right" />
+            android:textSize="16sp"/>
     </androidx.core.widget.NestedScrollView>
 
     <Button

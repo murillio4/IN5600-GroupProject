@@ -61,6 +61,8 @@
     <!--color on surface (light)-->
     <color name="black_900">#000000</color>
 
+    <color name="gray">#F1F2F1</color>
+
     <color name="primaryColor">#424242</color>
     <color name="primaryLightColor">#6d6d6d</color>
     <color name="primaryDarkColor">#1b1b1b</color>

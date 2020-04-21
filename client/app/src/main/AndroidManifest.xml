@@ -41,11 +41,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_api_key" />
 
-        <activity android:name=".ui.fragment.DisplayClaimFragment"/>
-        <!-- <activity android:name=".ui.activity.SessionActivity"></activity> -->
+
         <activity
             android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_main_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

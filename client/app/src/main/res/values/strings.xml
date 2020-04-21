@@ -6,12 +6,12 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_out">Sign out</string>
-    <string name="welcome">"Welcome "</string>
+    <string name="welcome">"Welcome %1$s"</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="close_dropdown_menu">Close</string>
 
-    <string name="title_main_activity">ASS Insurance</string>
+    <string name="title_main_activity">H&amp;M Insurance</string>
 
     <!-- Form Input Messages -->
     <string name="invalid_description">Not a valid description</string>

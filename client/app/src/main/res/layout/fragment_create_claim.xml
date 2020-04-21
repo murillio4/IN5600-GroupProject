@@ -16,7 +16,7 @@
         android:padding="10dp"
         android:text="@string/create_claim_title"
         android:textSize="20sp"
-        android:textColor="#404140"
+        android:textColor="@color/primaryColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/create_claim_description_title" />
 
@@ -27,14 +27,14 @@
         android:gravity="start"
         android:text="@string/claim_description"
         android:textSize="16sp"
-        android:textColor="#404140"
+        android:textColor="@color/primaryColor"
         app:layout_constraintTop_toBottomOf="@id/create_claim_title"/>
 
     <EditText
         android:id="@+id/create_claim_description_input"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#F1F2F1"
+        android:background="@color/gray"
         android:gravity="start"
         android:textSize="12sp"
         android:autofillHints=""

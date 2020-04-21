@@ -121,7 +121,8 @@ public class ClaimsRepository {
         return new NetworkBoundResource<ClaimList, Claims>() {
             @Override
             protected boolean shouldFetchRemote() {
-                return true; // ONLY OF NOT CACHED!!!
+                ClaimList claimList = claimsLocalDataSource.getClaimList();
+                return claimList == null || !claimList.getId().equals(id);
             }
 
             @Override

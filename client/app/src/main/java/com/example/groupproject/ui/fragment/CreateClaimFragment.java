@@ -1,7 +1,6 @@
 package com.example.groupproject.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,13 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.Claim;
@@ -43,7 +41,9 @@ public class CreateClaimFragment extends DaggerFragment
 
     protected Claim claim;
 
-    EditText descriptionEditText;
+    protected EditText descriptionEditText;
+
+    private Button submitButton;
 
     @Inject
     PhotoViewModel photoViewModel;
@@ -72,7 +72,9 @@ public class CreateClaimFragment extends DaggerFragment
 
         view.findViewById(R.id.create_claim_add_map_location_button).setOnClickListener(this);
         view.findViewById(R.id.create_claim_add_photo_button).setOnClickListener(this);
-        view.findViewById(R.id.create_claim_submit_button).setOnClickListener(this);
+
+        submitButton = view.findViewById(R.id.create_claim_submit_button);
+        submitButton.setOnClickListener(this);
 
         return view;
     }
@@ -208,7 +210,7 @@ public class CreateClaimFragment extends DaggerFragment
                 return;
             }
 
-            descriptionEditText.setEnabled(descriptionState.isDataValid());
+            submitButton.setEnabled(descriptionState.isDataValid());
             claim.setDescription(descriptionEditText.getText().toString());
             if (descriptionState.getData() != null) {
                 descriptionEditText.setError(getString(descriptionState.getData()));

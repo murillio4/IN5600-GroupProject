@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="15dp"
     android:id="@+id/claim_list_item"
-    android:background="@color/primaryLightColor"
+    android:background="@color/gray"
     android:layout_margin="15dp" >
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/claim_list_item_text"
         android:layout_toEndOf="@id/claim_list_item_image"
-        android:textColor="#000"
+        android:textColor="@color/black_800"
         android:layout_centerVertical="true"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="20dp"

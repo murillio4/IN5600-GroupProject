@@ -3,19 +3,14 @@ package com.example.groupproject.ui.fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.example.groupproject.R;
 import com.example.groupproject.data.model.Claim;
 import com.example.groupproject.data.util.ClaimUtil;
-import com.example.groupproject.data.util.ImageUtil;
 import com.example.groupproject.data.util.MapUtil;
 import com.example.groupproject.data.util.PermissionUtil;
 import com.example.groupproject.data.util.TransitionUtil;
@@ -34,14 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
-import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -150,13 +136,13 @@ public class DisplayClaimFragment extends DaggerFragment
         Glide.with(context)
                 .asBitmap()
                 .load(claim.getPhotoPath())
-                /*.placeholder(R.drawable.ic_launcher_background)*/
+                .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_error_red_24dp)
                 .into(this.claimImage);
     }
 
     private void toUpdateClaimFragment() {
-        Bundle bundle = ClaimUtil.createBundleFromClaim(this.claim);
+        Bundle bundle = ClaimUtil.createBundleFromClaim(this.claim.clone());
         UpdateClaimFragment updateClaimFragment = new UpdateClaimFragment();
         updateClaimFragment.setArguments(bundle);
         TransitionUtil.toNextFragment(getActivity(), TAG, updateClaimFragment);

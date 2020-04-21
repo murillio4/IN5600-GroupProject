@@ -130,7 +130,7 @@ public class LoginActivity extends DaggerAppCompatActivity
     }
 
     private void showLoginSuccess(@NonNull String displayName) {
-        String welcome = getString(R.string.welcome) + displayName;
+        String welcome = getString(R.string.welcome, displayName);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 
