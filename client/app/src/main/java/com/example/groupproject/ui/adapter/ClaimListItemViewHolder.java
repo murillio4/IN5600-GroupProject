@@ -41,7 +41,6 @@ public class ClaimListItemViewHolder extends RecyclerView.ViewHolder
                 .asBitmap()
                 .addListener(this)
                 .load(imagePath)
-                .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_error_red_24dp)
                 .into(this.claimListItemImage);
 

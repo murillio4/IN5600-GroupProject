@@ -10,8 +10,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:id="@+id/claim_list_item_image"
-        android:src="@mipmap/ic_launcher" />
+        android:id="@+id/claim_list_item_image" />
     
     <TextView
         android:layout_width="wrap_content"

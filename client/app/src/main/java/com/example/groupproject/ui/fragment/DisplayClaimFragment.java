@@ -136,7 +136,6 @@ public class DisplayClaimFragment extends DaggerFragment
         Glide.with(context)
                 .asBitmap()
                 .load(claim.getPhotoPath())
-                .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_error_red_24dp)
                 .into(this.claimImage);
     }
