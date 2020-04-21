@@ -84,6 +84,11 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     private GoogleMap googleMap = null;
     private LatLng marker;
 
+    private String[] permissions = new String[] {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
     @Inject
     Context context;
     @Inject
@@ -345,11 +350,8 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
     private void requestPermissions(Runnable callback) {
 
         PermissionUtil.requestPermissions(
-            getContext(),
-            new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-            },
+            context,
+            permissions,
             callback,
             dexterError -> dismiss());
     }

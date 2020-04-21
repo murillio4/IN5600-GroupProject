@@ -36,7 +36,11 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
     @Inject
     Context context;
 
-    ClaimList claimList = null;
+    private ClaimList claimList = null;
+
+    private String[] permissions = new String[] {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,8 +83,8 @@ public class ClaimListFragment extends DaggerFragment implements View.OnClickLis
 
     private void requestPermissions(Runnable callback) {
         PermissionUtil.requestPermissions(
-                getContext(),
-                new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE },
+                context,
+                permissions,
                 callback,
                 dexterError -> Log.d(TAG, "requestPermissions: Failed to request permissions"));
     }

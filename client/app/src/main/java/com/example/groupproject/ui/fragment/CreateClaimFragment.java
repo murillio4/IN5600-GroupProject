@@ -32,8 +32,6 @@ import com.example.groupproject.ui.viewModel.LocationViewModel;
 import com.example.groupproject.ui.viewModel.PhotoViewModel;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;

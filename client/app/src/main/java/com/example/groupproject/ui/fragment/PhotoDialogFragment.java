@@ -49,6 +49,11 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
     @Inject
     Context context;
 
+    private String[] permissions = new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +77,8 @@ public class PhotoDialogFragment extends DaggerAppCompatDialogFragment
     private void requestStoragePermission(Runnable callback) {
         Log.i(TAG, "requestStoragePermission");
         PermissionUtil.requestPermissions(
-            getContext(),
-            new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            },
+            context,
+            permissions,
             callback,
             dexterError -> dismiss());
     }

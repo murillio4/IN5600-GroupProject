@@ -56,6 +56,12 @@ public class DisplayClaimFragment extends DaggerFragment
 
     private ImageView claimImage;
 
+    private String[] permissions = new String[]{
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
     @Inject
     ClaimsViewModel claimsViewModel;
 
@@ -123,12 +129,8 @@ public class DisplayClaimFragment extends DaggerFragment
 
     private void requestPermissions(Runnable callback) {
         PermissionUtil.requestPermissions(
-                getContext(),
-                new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                },
+                context,
+                permissions,
                 callback,
                 dexterError -> TransitionUtil.toPreviousFragment(getActivity()));
     }
