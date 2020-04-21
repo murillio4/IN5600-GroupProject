@@ -64,6 +64,7 @@ public class UpdateClaimFragment extends CreateClaimFragment {
             if (updateClaimResult.getError() != null) {
                 Log.d(TAG, "onViewCreated: Failed to update claim" + claim.getId());
             } else if (updateClaimResult.getSuccess() != null) {
+                Toast.makeText(context, R.string.update_claim_success, Toast.LENGTH_SHORT).show();
                 TransitionUtil.toPreviousFragment(getActivity());
                 TransitionUtil.toPreviousFragment(getActivity());
             }

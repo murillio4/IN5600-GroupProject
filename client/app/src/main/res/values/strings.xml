@@ -42,6 +42,12 @@
     <string name="claim_add_map_location">Add Map Location</string>
     <string name="claim_added_map_location">Map Location Added</string>
     <string name="claim_submit">Submit</string>
+    <string name="update_claim_success">Claim updated!</string>
+    <string name="create_claim_success">Claim created!</string>
+
+    <string name="claim_photo_missing">Missing Photo</string>
+    <string name="claim_location_mission">Missing Location</string>
+    <string name="claim_description_mission">Missing Description</string>
 
     <!--Photo Dialog-->
     <string name="photo_dialog_title">Select an option</string>
@@ -53,6 +59,8 @@
 
     <!--Location Dialog-->
     <string name="location_picker_dialog_btn">Select location</string>
+    <string name="location_picker_dialog_curr_location_error">Unable to get current location</string>
+    <string name="location_picker_dialog_no_selected">Location not selected</string>
 
 
     <!--Misc-->

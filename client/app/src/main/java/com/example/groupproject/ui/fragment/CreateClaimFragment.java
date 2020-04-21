@@ -104,7 +104,8 @@ public class CreateClaimFragment extends DaggerFragment
                 handleAddPhotoButton();
                 break;
             case R.id.create_claim_submit_button:
-                handleSubmitButton();
+                if (checkLocationAndPhoto())
+                    handleSubmitButton();
                 break;
         }
     }
@@ -138,9 +139,29 @@ public class CreateClaimFragment extends DaggerFragment
             if (createClaimResult.getError() != null) {
                 Log.d(TAG, "onViewCreated: Failed to create claim" + claim.getId());
             } else if (createClaimResult.getSuccess() != null) {
+                Toast.makeText(context, R.string.create_claim_success, Toast.LENGTH_SHORT).show();
                 TransitionUtil.toPreviousFragment(getActivity());
             }
         });
+    }
+
+    private boolean checkLocationAndPhoto() {
+        if (claim.getDescription() == null || claim.getDescription().isEmpty()) {
+            Toast.makeText(context, R.string.claim_description_mission, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (claim.getLocation() == null || claim.getLocation().isEmpty()) {
+            Toast.makeText(context, R.string.claim_location_mission, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (claim.getPhotoPath() == null || claim.getPhotoPath().isEmpty()) {
+            Toast.makeText(context, R.string.claim_photo_missing, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void handleAddMapLocationButton() {
@@ -156,7 +177,7 @@ public class CreateClaimFragment extends DaggerFragment
     private void handleSubmitButton() {
         if (!ClaimUtil.verifyClaim(claim)) {
             Log.d(TAG, "handleSubmitButton: Claim is missing fields");
-            Toast.makeText(context, "Failed to post claim", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.create_claim_failed, Toast.LENGTH_SHORT).show();
             return;
         }
 

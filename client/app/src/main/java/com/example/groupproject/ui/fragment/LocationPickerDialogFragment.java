@@ -230,7 +230,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                     locationViewModel.setLocationResult(Result.success(marker));
                     dismiss();
                 } else {
-                    Toast.makeText(context, "No location chosen", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.location_picker_dialog_no_selected, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.mt_clear:
@@ -373,7 +373,7 @@ public class LocationPickerDialogFragment extends DaggerDialogFragment
                             listenForLocationUpdate();
                         }
                 }).addOnFailureListener(getActivity(), e -> {
-                    Toast.makeText(context, "Unable to fetch last location", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.location_picker_dialog_curr_location_error, Toast.LENGTH_LONG).show();
                 });
     }
 
