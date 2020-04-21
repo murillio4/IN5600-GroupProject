@@ -161,9 +161,11 @@ public class DisplayClaimFragment extends DaggerFragment
     }
 
     private void startViewImageActivity() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(claim.getPhotoPath()), "image/*");
+        Log.d(TAG, "startViewImageActivity: " + claim.getPhotoPath());
+        Intent intent = new Intent()
+                .setAction(Intent.ACTION_VIEW)
+                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                .setDataAndType(Uri.parse(claim.getPhotoPath()), "image/*");
         startActivity(intent);
     }
 }
